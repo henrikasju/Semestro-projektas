@@ -1,10 +1,7 @@
 package com.example.neutronas;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.hardware.Camera;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +10,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 public class MainActivity extends AppCompatActivity {
+
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,27 +30,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
-
-
-
-
     }
-
-    public void LaunchCamera()
-    {
-        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivity(cameraIntent);
-        // onActicityResults(cameraIntent);
-    }
-
-    protected void onActicityResults(Intent picture)
-    {
-        Bitmap photo = (Bitmap) picture.getExtras().get("cameraIntent");
-        ImageView imageView = findViewById(R.id.picturePreview);
-        imageView.setImageBitmap(photo);
-    }
-
-    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -62,17 +41,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ImageView imageView = findViewById(R.id.picturePreview);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
+            ImageView imageView = findViewById(R.id.picturePreview);
             imageView.setImageBitmap(imageBitmap);
+            imageView.setVisibility(View.VISIBLE);
         }
     }
-
-
-
-
-
-
 }

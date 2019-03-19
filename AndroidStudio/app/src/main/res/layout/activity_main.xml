@@ -20,8 +20,8 @@
 
     <ImageView
         android:id="@+id/picturePreview"
-        android:layout_width="378dp"
-        android:layout_height="602dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
@@ -34,6 +34,11 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.13"
         app:srcCompat="@color/colorAccent" />
+
+    <org.opencv.android.JavaCameraView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/cameraViewer"/>
 
 
 </android.support.constraint.ConstraintLayout>

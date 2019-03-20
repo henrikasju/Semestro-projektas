@@ -1,7 +1,9 @@
 package com.example.neutronas;
 
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceView;
@@ -11,6 +13,7 @@ import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.android.Utils;
 import org.opencv.core.DMatch;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -21,10 +24,10 @@ import org.opencv.features2d.DescriptorExtractor;
 import org.opencv.features2d.DescriptorMatcher;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.features2d.Features2d;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -95,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         } else {
             Log.d("Logger", "OpenCV library found inside package. Using it!");
             mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
-            System.loadLibrary("nonfree");
+            //System.loadLibrary("nonfree");
         }
     }
 
@@ -107,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                     Log.i("Logger", "OpenCV loaded successfully");
                     mOpenCvCameraView.enableView();
                     try {
-                        initializeOpenCVDependencies("Simple3");
+                        initializeOpenCVDependencies();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -129,17 +132,24 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         }
     }
 
-    public void initializeOpenCVDependencies(String imgName) throws IOException {
+    public void initializeOpenCVDependencies() throws IOException {
         mOpenCvCameraView.enableView();
         detector = FeatureDetector.create(FeatureDetector.ORB);
         descriptor = DescriptorExtractor.create(DescriptorExtractor.ORB);
         matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
         img1 = new Mat();
-        String pathName = Environment.getExternalStorageDirectory()+"/"+imgName+".png";
+
+        /*String pathName = Environment.getExternalStorageDirectory()+"/"+imgName+".jpg";
         Mat srcImg = Imgcodecs.imread(pathName, Imgcodecs.IMREAD_UNCHANGED);
         img1 = srcImg.clone();
-        Imgproc.cvtColor(srcImg, img1, Imgproc.COLOR_RGBA2GRAY);
-        Imgcodecs.imwrite(Environment.getExternalStorageDirectory()+"/Neutronas/"+imgName+"_KPs.png", img1);
+        Imgproc.cvtColor(srcImg, img1, Imgproc.COLOR_RGBA2GRAY);*/
+        AssetManager assetManager = getAssets();
+        InputStream istr = assetManager.open("simple3.jpg");
+        Bitmap bitmap = BitmapFactory.decodeStream(istr);
+        Utils.bitmapToMat(bitmap, img1);
+        Mat dstImg = img1.clone();
+        Imgproc.cvtColor(dstImg, img1, Imgproc.COLOR_RGB2GRAY);
+        //Imgcodecs.imwrite(Environment.getExternalStorageDirectory()+"/Neutronas/"+imgName+"_KPs.png", img1);
 
         img1.convertTo(img1, 0); //converting the image to match with the type of the cameras image
         descriptors1 = new Mat();
@@ -191,6 +201,7 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         }
         Features2d.drawMatches(img1, keypoints1, aInputFrame, keypoints2, goodMatches, outputImg, GREEN, RED, drawnMatches, Features2d.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS);
         Mat dstOutputImg = new Mat();
+        mOpenCvCameraView.setUserRotation(90);
         Imgproc.resize(outputImg, dstOutputImg, aInputFrame.size());
         return dstOutputImg;
     }

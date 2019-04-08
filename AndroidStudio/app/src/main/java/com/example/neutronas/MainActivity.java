@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("nonfree");
     }
     private ImageView imageView3;
-    private Bitmap inputImage; // make bitmap from image resource
+    private Bitmap inputImage;
     private FeatureDetector detectorSift;// = FeatureDetector.create(FeatureDetector.SIFT);
 
     public void sift() {

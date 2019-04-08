@@ -1,44 +1,102 @@
 package com.example.neutronas;
 
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.SurfaceView;
-import android.view.WindowManager;
+import android.view.View;
+import android.widget.ImageView;
 
 import org.opencv.android.BaseLoaderCallback;
-import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
-import org.opencv.core.DMatch;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfByte;
-import org.opencv.core.MatOfDMatch;
 import org.opencv.core.MatOfKeyPoint;
-import org.opencv.core.Scalar;
-import org.opencv.features2d.DescriptorExtractor;
-import org.opencv.features2d.DescriptorMatcher;
 import org.opencv.features2d.FeatureDetector;
 import org.opencv.features2d.Features2d;
 import org.opencv.imgproc.Imgproc;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements CameraBridgeViewBase.CvCameraViewListener2 {
-
+public class MainActivity extends AppCompatActivity {
+//implements CameraBridgeViewBase.CvCameraViewListener2
     static {
         System.loadLibrary("opencv_java");
         System.loadLibrary("nonfree");
     }
+    private ImageView imageView3;
+    private Bitmap inputImage; // make bitmap from image resource
+    private FeatureDetector detectorSift;// = FeatureDetector.create(FeatureDetector.SIFT);
 
-    private int w, h;
+    public void sift() {
+        Mat rgba = new Mat();
+        Mat rgbaGrey = new Mat();
+        Utils.bitmapToMat(inputImage, rgba);
+        MatOfKeyPoint keyPoints = new MatOfKeyPoint();
+        Imgproc.cvtColor(rgba, rgbaGrey, Imgproc.COLOR_RGBA2GRAY);
+        detectorSift.detect(rgbaGrey, keyPoints);
+        Mat test = new Mat();
+        Features2d.drawKeypoints(rgbaGrey, keyPoints, test);
+        Utils.matToBitmap(test, inputImage);
+        imageView3.setImageBitmap(inputImage);
+    }
+
+    public void initializeDependencies() throws IOException {
+        detectorSift = FeatureDetector.create(FeatureDetector.SIFT);
+    }
+
+    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+        @Override
+        public void onManagerConnected(int status) {
+            switch (status) {
+                case LoaderCallbackInterface.SUCCESS: {
+                    Log.i("Logger", "OpenCV loaded successfully");
+                    try {
+                        initializeDependencies();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+                default: {
+                    super.onManagerConnected(status);
+                }
+                break;
+            }
+        }
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (!OpenCVLoader.initDebug()) {
+            Log.d("Logger", "Internal OpenCV library not found. Using OpenCV Manager for initialization");
+            OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, mLoaderCallback);
+        } else {
+            Log.d("Logger", "OpenCV library found inside package. Using it!");
+            mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
+        }
+        inputImage = BitmapFactory.decodeResource(getResources(), R.drawable.simple3);
+        setContentView(R.layout.activity_main);
+        imageView3 = this.findViewById(R.id.imageView3);
+        sift();
+        imageView3.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+
+
+
+
+
+
+    /*private int w, h;
     private CameraBridgeViewBase mOpenCvCameraView;
     private Scalar RED = new Scalar(255, 0, 0);
     private Scalar GREEN = new Scalar(0, 255, 0);
@@ -46,10 +104,10 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
     private DescriptorExtractor descriptor;
     private DescriptorMatcher matcher;
     private Mat descriptors2, descriptors1, img1;
-    private MatOfKeyPoint keypoints1, keypoints2;
+    private MatOfKeyPoint keypoints1, keypoints2;*/
 
 
-    @Override
+    /*@Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.i("Logger", "called onCreate");
         super.onCreate(savedInstanceState);
@@ -59,9 +117,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         mOpenCvCameraView = findViewById(R.id.cameraViewer);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onCameraViewStarted(int width, int height) {
         //Descriptor.turnGrey("Simple1");
         //Descriptor.saveKeyPointImg("Simple2");
@@ -70,26 +128,26 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         //Descriptor.turnGrey("Simple5");
         w = width;
         h = height;
-    }
+    }*/
 
-    @Override
+    /*@Override
     public void onCameraViewStopped() {
     }
 
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         return recognize(inputFrame.rgba());
-    }
+    }*/
 
-    @Override
+    /*@Override
     protected void onPause() {
         super.onPause();
         if (mOpenCvCameraView != null) {
             mOpenCvCameraView.disableView();
         }
-    }
+    }*/
 
-    @Override
+    /*@Override
     protected void onResume() {
         super.onResume();
         if (!OpenCVLoader.initDebug()) {
@@ -100,9 +158,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
             mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
             //System.loadLibrary("nonfree");
         }
-    }
+    }*/
 
-    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+    /*private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
             switch (status) {
@@ -122,32 +180,33 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
                 break;
             }
         }
-    };
+    };*/
 
-    @Override
+    /*@Override
     protected void onDestroy() {
         super.onDestroy();
         if (mOpenCvCameraView != null) {
             mOpenCvCameraView.disableView();
         }
-    }
+    }*/
 
-    public void initializeOpenCVDependencies() throws IOException {
+    /*public void initializeOpenCVDependencies() throws IOException {
         mOpenCvCameraView.enableView();
         detector = FeatureDetector.create(FeatureDetector.ORB);
         descriptor = DescriptorExtractor.create(DescriptorExtractor.ORB);
         matcher = DescriptorMatcher.create(DescriptorMatcher.BRUTEFORCE_HAMMING);
-        img1 = new Mat();
+        img1 = new Mat();*/
 
         /*String pathName = Environment.getExternalStorageDirectory()+"/"+imgName+".jpg";
         Mat srcImg = Imgcodecs.imread(pathName, Imgcodecs.IMREAD_UNCHANGED);
         img1 = srcImg.clone();
         Imgproc.cvtColor(srcImg, img1, Imgproc.COLOR_RGBA2GRAY);*/
-        AssetManager assetManager = getAssets();
+       /* AssetManager assetManager = getAssets();
         InputStream istr = assetManager.open("simple3.jpg");
         Bitmap bitmap = BitmapFactory.decodeStream(istr);
         Utils.bitmapToMat(bitmap, img1);
         Mat dstImg = img1.clone();
+        img1.release();
         Imgproc.cvtColor(dstImg, img1, Imgproc.COLOR_RGB2GRAY);
         //Imgcodecs.imwrite(Environment.getExternalStorageDirectory()+"/Neutronas/"+imgName+"_KPs.png", img1);
 
@@ -156,9 +215,9 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         keypoints1 = new MatOfKeyPoint();
         detector.detect(img1, keypoints1);
         descriptor.compute(img1, keypoints1, descriptors1);
-    }
+    }*/
 
-    public Mat recognize(Mat aInputFrame) {
+    /*public Mat recognize(Mat aInputFrame) {
 
         Imgproc.cvtColor(aInputFrame, aInputFrame, Imgproc.COLOR_RGB2GRAY);
         descriptors2 = new Mat();
@@ -204,5 +263,5 @@ public class MainActivity extends AppCompatActivity implements CameraBridgeViewB
         mOpenCvCameraView.setUserRotation(90);
         Imgproc.resize(outputImg, dstOutputImg, aInputFrame.size());
         return dstOutputImg;
-    }
+    }*/
 }

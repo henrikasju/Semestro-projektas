@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/CaptureButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="52dp"
+        android:text="Capture Picture"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="346dp"
+        android:layout_height="297dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="348dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.54"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@android:color/black" />
+
+    <org.opencv.android.JavaCameraView
+        android:id="@+id/javaCameraView"
+        android:layout_width="346dp"
+        android:layout_height="277dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="33dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</android.support.constraint.ConstraintLayout>
+
+
+for (int i = 0; i < matches.size(); i++) {
+            MatOfDMatch matofDMatch = matches.get(i);
+            DMatch[] dmatcharray = matofDMatch.toArray();
+            DMatch m1 = dmatcharray[0];
+            DMatch m2 = dmatcharray[1];
+
+            if (m1.distance <= m2.distance * nndrRatio) {
+                goodMatchesList.addLast(m1);
+
+            }
+        }
+
+        //if (goodMatchesList.size() >= 7) {
+        System.out.println("Object Found!");
+
+        List<KeyPoint> objKeypointlist = patternKeyPoints.toList();
+        List<KeyPoint> scnKeypointlist = pictureKeyPoints.toList();
+
+        LinkedList<Point> objectPoints = new LinkedList<>();
+        LinkedList<Point> scenePoints = new LinkedList<>();
+
+        for (int i = 0; i < goodMatchesList.size(); i++) {
+            objectPoints.addLast(objKeypointlist.get(goodMatchesList.get(i).queryIdx).pt);
+            scenePoints.addLast(scnKeypointlist.get(goodMatchesList.get(i).trainIdx).pt);
+        }
+
+        MatOfPoint2f objMatOfPoint2f = new MatOfPoint2f();
+        objMatOfPoint2f.fromList(objectPoints);
+        MatOfPoint2f scnMatOfPoint2f = new MatOfPoint2f();
+        scnMatOfPoint2f.fromList(scenePoints);
+
+        Mat homography = Calib3d.findHomography(objMatOfPoint2f, scnMatOfPoint2f, Calib3d.RANSAC, 3);
+
+        Mat obj_corners = new Mat(4, 1, CvType.CV_32FC2);
+        Mat scene_corners = new Mat(4, 1, CvType.CV_32FC2);
+
+        obj_corners.put(0, 0, new double[]{0, 0});
+        obj_corners.put(1, 0, new double[]{patternMat.cols(), 0});
+        obj_corners.put(2, 0, new double[]{patternMat.cols(), patternMat.rows()});
+        obj_corners.put(3, 0, new double[]{0, patternMat.rows()});
+
+        System.out.println("Transforming object corners to scene corners...");
+        Core.perspectiveTransform(obj_corners, scene_corners, homography);
+
+            /*Mat img = Highgui.imread(bookScene, Highgui.CV_LOAD_IMAGE_COLOR);
+
+            Core.line(img, new Point(scene_corners.get(0, 0)), new Point(scene_corners.get(1, 0)), new Scalar(0, 255, 0), 4);
+            Core.line(img, new Point(scene_corners.get(1, 0)), new Point(scene_corners.get(2, 0)), new Scalar(0, 255, 0), 4);
+            Core.line(img, new Point(scene_corners.get(2, 0)), new Point(scene_corners.get(3, 0)), new Scalar(0, 255, 0), 4);
+            Core.line(img, new Point(scene_corners.get(3, 0)), new Point(scene_corners.get(0, 0)), new Scalar(0, 255, 0), 4);
+            */
+        System.out.println("Drawing matches image...");
+        MatOfDMatch goodMatches = new MatOfDMatch();
+        goodMatches.fromList(goodMatchesList);
+
+        Features2d.drawMatches(patternMat, patternKeyPoints, pictureMat, pictureKeyPoints, goodMatches, outputMat, matchestColor, newKeypointColor, new MatOfByte(), 2);
+
+        //Highgui.imwrite("output//outputImage.jpg", patternMat);
+        //Highgui.imwrite("output//matchoutput.jpg", matchoutput);
+
+        Utils.matToBitmap(matchoutput, outputBitmap);
+        picture.setImageBitmap(Bitmap.createScaledBitmap(outputBitmap, 120, 120, false));
+        //Highgui.imwrite("output//img.jpg", img);
+        //} else {
+        //    System.out.println("Object Not Found");
+        //}

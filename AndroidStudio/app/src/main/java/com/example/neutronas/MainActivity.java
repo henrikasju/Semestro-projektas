@@ -1,24 +1,29 @@
 package com.example.neutronas;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.Manifest;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
-import org.opencv.android.Utils;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfKeyPoint;
+import org.opencv.features2d.DescriptorExtractor;
+import org.opencv.features2d.DescriptorMatcher;
 import org.opencv.features2d.FeatureDetector;
-import org.opencv.features2d.Features2d;
-import org.opencv.imgproc.Imgproc;
 
 import java.io.IOException;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 //implements CameraBridgeViewBase.CvCameraViewListener2
@@ -26,25 +31,15 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("opencv_java");
         System.loadLibrary("nonfree");
     }
-    private ImageView imageView3;
-    private Bitmap inputImage;
-    private FeatureDetector detectorSift;// = FeatureDetector.create(FeatureDetector.SIFT);
 
-    public void sift() {
-        Mat rgba = new Mat();
-        Mat rgbaGrey = new Mat();
-        Utils.bitmapToMat(inputImage, rgba);
-        MatOfKeyPoint keyPoints = new MatOfKeyPoint();
-        Imgproc.cvtColor(rgba, rgbaGrey, Imgproc.COLOR_RGBA2GRAY);
-        detectorSift.detect(rgbaGrey, keyPoints);
-        Mat test = new Mat();
-        Features2d.drawKeypoints(rgbaGrey, keyPoints, test);
-        Utils.matToBitmap(test, inputImage);
-        imageView3.setImageBitmap(inputImage);
-    }
+    public static FeatureDetector detectorSift;
+    public static DescriptorMatcher matcher;
+    public static DescriptorExtractor extractor;
 
     public void initializeDependencies() throws IOException {
         detectorSift = FeatureDetector.create(FeatureDetector.SIFT);
+        matcher = DescriptorMatcher.create(DescriptorMatcher.FLANNBASED);
+        extractor = DescriptorExtractor.create(DescriptorExtractor.SIFT);
     }
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -71,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         if (!OpenCVLoader.initDebug()) {
             Log.d("Logger", "Internal OpenCV library not found. Using OpenCV Manager for initialization");
             OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, mLoaderCallback);
@@ -78,17 +74,47 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Logger", "OpenCV library found inside package. Using it!");
             mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
         }
-        inputImage = BitmapFactory.decodeResource(getResources(), R.drawable.simple3);
-        setContentView(R.layout.activity_main);
-        imageView3 = this.findViewById(R.id.imageView3);
-        sift();
-        imageView3.setVisibility(View.VISIBLE);
+        Dexter.withActivity(this)
+                .withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        if(!report.areAllPermissionsGranted()){
+                            Toast.makeText(MainActivity.this, "You need to grant all permission to use this app features", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+
+                    }
+                })
+                .check();
+        Button startButton = findViewById(R.id.start_button);
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent cvIntent = new Intent(MainActivity.this, OpenCVCamera.class);
+                startActivity(cvIntent);
+            }
+        });
+        Button scannerButton = (Button)findViewById(R.id.keypoint_button);
+        scannerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent cvIntent = new Intent(MainActivity.this, DetectKeypoints.class);
+                startActivity(cvIntent);
+            }
+        });
     }
 
     @Override
     public void onResume() {
         super.onResume();
     }
+
+    // OpenCV camera methods
+
 
 
 

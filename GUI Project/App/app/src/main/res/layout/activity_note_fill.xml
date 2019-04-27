@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".NoteFill">
+
+    <!--topBar-->
+    <ImageView
+        android:id="@+id/topBar"
+        android:layout_width="match_parent"
+        android:layout_height="900dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/toppartabout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteY="-10dp" />
+
+    <!--BarText-->
+    <ImageView
+        android:id="@+id/note_view"
+        android:layout_width="130dp"
+        android:layout_height="70dp"
+        android:src="@drawable/topbarnote"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="@+id/topBar"
+        app:layout_constraintTop_toTopOf="@+id/topBar"
+        app:layout_constraintVertical_bias="0.022" />
+
+    <!--BackButton-->
+    <Button
+        android:id="@+id/back_button_note"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/backbutton"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.023"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/topBar"
+        app:layout_constraintVertical_bias="0.029" />
+
+    <ImageView
+        android:id="@+id/note_info_box"
+        android:layout_width="350dp"
+        android:layout_height="590dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/noteinfobox"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.777"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/note_view"
+        app:layout_constraintVertical_bias="0.508" />
+
+    <com.mikhaellopez.circularimageview.CircularImageView
+        app:civ_border_width="2dp"
+        app:civ_border_color="#B8B5B5"
+
+
+
+        android:id="@+id/symbol_circle"
+        android:layout_width="165dp"
+        android:layout_height="165dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:src="@drawable/symbolarea"
+        app:layout_constraintStart_toStartOf="@+id/note_info_box"
+        app:layout_constraintTop_toTopOf="@+id/note_info_box" />
+
+    <!--<com.mikhaellopez.circularimageview.CircularImageView-->
+        <!--android:layout_width="165dp"-->
+        <!--android:layout_height="165dp"-->
+        <!--android:src="@drawable/symbolarea"/>-->
+
+    <ImageView
+        android:id="@+id/date_line"
+        android:layout_width="145dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="176dp"
+        android:layout_marginEnd="8dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/notedateline"
+        app:layout_constraintEnd_toEndOf="@+id/note_info_box"
+        app:layout_constraintHorizontal_bias="0.35"
+        app:layout_constraintStart_toEndOf="@+id/symbol_circle"
+        app:layout_constraintTop_toTopOf="@+id/note_info_box" />
+
+    <ImageView
+        android:id="@+id/note_name_line"
+        android:layout_width="317dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="28dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/notenameline"
+        app:layout_constraintEnd_toEndOf="@+id/note_info_box"
+        app:layout_constraintHorizontal_bias="0.515"
+        app:layout_constraintStart_toStartOf="@+id/note_info_box"
+        app:layout_constraintTop_toBottomOf="@+id/symbol_circle" />
+
+    <ImageView
+        android:id="@+id/note_text_box"
+        android:layout_width="317dp"
+        android:layout_height="335dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/notetextarea"
+        app:layout_constraintBottom_toBottomOf="@+id/note_info_box"
+        app:layout_constraintEnd_toEndOf="@+id/note_info_box"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/note_info_box"
+        app:layout_constraintTop_toTopOf="@+id/note_name_line" />
+
+
+</android.support.constraint.ConstraintLayout>

@@ -56,7 +56,7 @@ public class DetectKeypoints extends AppCompatActivity {
     private Scalar newKeypointColor = new Scalar(255, 0, 0);
     private List<MatOfDMatch> matches;
     private LinkedList<DMatch> goodMatchesList;
-    private String PATH = "E:\\KTU\\2018-2019\\Repositorija\\Semestro-projektas\\AndroidStudio\\app\\src\\main\\res\\drawable\\simple3.jpg";
+    private String PATH = "\\Users\\henrikasj\\Documents\\GitHub\\Semestro-projektas\\AndroidStudio\\app\\src\\main\\res\\Simple1.png";
     private int scaleSize = 240;
 
 

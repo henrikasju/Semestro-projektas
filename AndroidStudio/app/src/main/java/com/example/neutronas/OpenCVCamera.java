@@ -1,5 +1,6 @@
 package com.example.neutronas;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -69,6 +70,8 @@ public class OpenCVCamera extends AppCompatActivity implements CameraBridgeViewB
                 Log.d(TAG, "Path " + outPicture);
                 PATH = outPicture;
                 System.out.println(outPicture);
+//                Intent cvIntent = new Intent(OpenCVCamera.this, About.class);
+//                startActivity(cvIntent);
             }
         });
     }

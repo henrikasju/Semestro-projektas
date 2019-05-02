@@ -15,61 +15,61 @@
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <!--TopWhitePArt-->
     <ImageView
         android:id="@+id/topWhite"
         android:layout_width="match_parent"
-        android:layout_height="1850dp"
+        android:layout_height="160dp"
+
+        android:adjustViewBounds="false"
+        android:background="#00D82323"
         android:scaleType="fitXY"
         android:src="@drawable/toppartabout"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/backGround"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="-16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+    </LinearLayout>
 
     <!--AppLogo-->
     <ImageView
         android:id="@+id/appLogo"
-        android:layout_width="148dp"
-        android:layout_height="148dp"
+        android:layout_width="45dp"
+        android:layout_height="50dp"
 
         android:src="@drawable/applogo"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/appName"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.088" />
 
     <!--AppName-->
     <ImageView
         android:id="@+id/appName"
-        android:layout_width="240dp"
-        android:layout_height="74dp"
+        android:layout_width="284dp"
+        android:layout_height="114dp"
+        android:layout_marginTop="24dp"
         android:src="@drawable/neutronnotes"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.666"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.056" />
+        app:layout_constraintEnd_toEndOf="@id/backGround"
+        app:layout_constraintStart_toStartOf="@id/backGround"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!--appTopText-->
-    <ImageView
-        android:id="@+id/appTopText"
-        android:layout_width="270dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="100dp"
-        android:src="@drawable/toptext"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.808"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <!--Gallerybutton-->
     <ImageButton
@@ -77,24 +77,18 @@
         android:layout_width="144dp"
         android:layout_height="144dp"
         android:background="@drawable/gallerybutton"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.168"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.797" />
+        tools:layout_editor_absoluteX="37dp"
+        tools:layout_editor_absoluteY="422dp" />
 
     <!--scannLogo-->
     <ImageButton
         android:id="@+id/scan_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="44dp"
+        android:layout_width="144dp"
+        android:layout_height="144dp"
+
         android:background="@drawable/scanbutton"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.499" />
+        tools:layout_editor_absoluteX="225dp"
+        tools:layout_editor_absoluteY="248dp" />
 
     <!--newsbutton-->
     <ImageButton
@@ -102,43 +96,38 @@
         android:layout_width="144dp"
         android:layout_height="144dp"
         android:background="@drawable/newsbutton"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.835"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.797" />
+        tools:layout_editor_absoluteX="225dp"
+        tools:layout_editor_absoluteY="422dp" />
 
     <!--camerabutton-->
     <ImageButton
         android:id="@+id/cameraView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/camerabutton"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/scan_view"
-        app:layout_constraintHorizontal_bias="0.633"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.499" />
+        app:layout_constraintBottom_toTopOf="@+id/aboutButton"
+        app:layout_constraintStart_toStartOf="@+id/backGround"
+        app:layout_constraintTop_toBottomOf="@+id/topWhite"
+        app:layout_constraintVertical_bias="0.287" />
 
     <!--Aboutbutton-->
     <Button
         android:id="@+id/aboutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:background="@drawable/aboutbutton"
         android:fontFamily="sans-serif-thin"
         android:text="About"
         android:textSize="34dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/backGround"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.988" />
+        app:layout_constraintVertical_bias="0.906" />
 
 
 </android.support.constraint.ConstraintLayout>

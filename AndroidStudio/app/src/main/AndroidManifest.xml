@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".KeyPointDetector"></activity>
+        <activity android:name=".Test"></activity>
+        <activity android:name=".KeyPointDetector" />
         <activity android:name=".NoteFill" />
         <activity android:name=".About" />
         <activity android:name=".News" />

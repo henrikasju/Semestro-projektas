@@ -1,13 +1,18 @@
 package com.example.neutronas;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TableRow;
 import android.widget.Toast;
 
 import com.karumi.dexter.Dexter;
@@ -149,6 +154,39 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+    public class SquareImageView extends ImageButton
+    {
+
+        public SquareImageView(final Context context)
+        {
+            super(context);
+        }
+
+        public SquareImageView(final Context context, final AttributeSet attrs)
+        {
+            super(context, attrs);
+        }
+
+        public SquareImageView(final Context context, final AttributeSet attrs, final int defStyle)
+        {
+            super(context, attrs, defStyle);
+        }
+
+
+        @Override
+        protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec)
+        {
+            final int width = getDefaultSize(getSuggestedMinimumWidth(),widthMeasureSpec);
+            setMeasuredDimension(width, width);
+        }
+
+        @Override
+        protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh)
+        {
+            super.onSizeChanged(w, w, oldw, oldh);
+        }
+    }
 
 
 

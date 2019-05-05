@@ -7,18 +7,20 @@
     android:background="@drawable/background"
     tools:context=".MainActivity">
 
-    <RelativeLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="-35dp">
 
         <RelativeLayout
             android:id="@+id/topBar"
             android:layout_width="match_parent"
             android:layout_height="140dp"
             android:background="@drawable/toppartabout"
-            android:layout_alignParentTop="true">
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -43,88 +45,97 @@
         </RelativeLayout>
 
         <!--<RelativeLayout-->
-            <!--android:id="@+id/buttons"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_margin="25dp"-->
-            <!--app:layout_constraintTop_toBottomOf="@id/topBar"-->
-            <!--app:layout_constraintBottom_toTopOf="@id/aboutButton"-->
-            <!--app:layout_constraintLeft_toLeftOf="parent"-->
+        <!--android:id="@+id/buttons"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="25dp"-->
+        <!--app:layout_constraintTop_toBottomOf="@id/topBar"-->
+        <!--app:layout_constraintBottom_toTopOf="@id/aboutButton"-->
+        <!--app:layout_constraintLeft_toLeftOf="parent"-->
 
-            <!--app:layout_constraintRight_toRightOf="parent">-->
+        <!--app:layout_constraintRight_toRightOf="parent">-->
 
-            <!--<TableLayout-->
-                <!--android:id="@+id/ButtonsTable"-->
-                <!--android:layout_width="400dp"-->
-                <!--android:layout_height="400dp"-->
-
-
-                <!--android:gravity="center">-->
-
-                <!--<TableRow-->
-                    <!--android:id="@+id/camera_scan_row"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:gravity="center">-->
-
-                    <!--<ImageButton-->
-                        <!--android:id="@+id/cameraView"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_margin="10dp"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@drawable/camerabutton" />-->
-
-                    <!--<ImageButton-->
-                        <!--android:id="@+id/scan_view"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_margin="10dp"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:background="@drawable/scanbutton" />-->
-
-                <!--</TableRow>-->
-
-                <!--<TableRow-->
-                    <!--android:id="@+id/gallery_news_row"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:gravity="center">-->
-
-                    <!--<ImageButton-->
-                        <!--android:id="@+id/galleryView"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_margin="10dp"-->
-                        <!--android:layout_weight="0"-->
-                        <!--android:background="@drawable/gallerybutton" />-->
-
-                    <!--<ImageButton-->
-                        <!--android:id="@+id/newsView"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:layout_margin="10dp"-->
-                        <!--android:layout_weight="0"-->
-                        <!--android:background="@drawable/newsbutton" />-->
-
-                <!--</TableRow>-->
+        <!--<TableLayout-->
+        <!--android:id="@+id/ButtonsTable"-->
+        <!--android:layout_width="400dp"-->
+        <!--android:layout_height="400dp"-->
 
 
-            <!--</TableLayout>-->
+        <!--android:gravity="center">-->
+
+        <!--<TableRow-->
+        <!--android:id="@+id/camera_scan_row"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:gravity="center">-->
+
+        <!--<ImageButton-->
+        <!--android:id="@+id/cameraView"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:layout_weight="1"-->
+        <!--android:background="@drawable/camerabutton" />-->
+
+        <!--<ImageButton-->
+        <!--android:id="@+id/scan_view"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:layout_weight="1"-->
+        <!--android:background="@drawable/scanbutton" />-->
+
+        <!--</TableRow>-->
+
+        <!--<TableRow-->
+        <!--android:id="@+id/gallery_news_row"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:gravity="center">-->
+
+        <!--<ImageButton-->
+        <!--android:id="@+id/galleryView"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:layout_weight="0"-->
+        <!--android:background="@drawable/gallerybutton" />-->
+
+        <!--<ImageButton-->
+        <!--android:id="@+id/newsView"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_margin="10dp"-->
+        <!--android:layout_weight="0"-->
+        <!--android:background="@drawable/newsbutton" />-->
+
+        <!--</TableRow>-->
+
+
+        <!--</TableLayout>-->
 
 
         <!--</RelativeLayout>-->
 
+
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="190dp"
-            android:layout_alignTop="@id/topBar"
-            android:layout_alignBottom="@id/aboutButton"
-            android:layout_marginBottom="130dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            >
+            android:id="@+id/relativeLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+
+            android:layout_marginStart="30dp"
+
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="30dp"
+
+
+            android:layout_marginBottom="110dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/topBar">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -134,46 +145,47 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_weight="1">
-                    <ImageButton
-                    android:id="@+id/cameraView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="10dp"
                     android:layout_weight="1"
-                    android:background="@drawable/camerabutton" />
+                    android:orientation="horizontal">
 
                     <ImageButton
-                    android:id="@+id/scan_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/scanbutton" />
+                        android:id="@+id/cameraView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/camerabutton" />
+
+                    <ImageButton
+                        android:id="@+id/scan_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/scanbutton" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
 
                     <ImageButton
-                    android:id="@+id/galleryView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/gallerybutton" />
+                        android:id="@+id/galleryView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/gallerybutton" />
 
                     <ImageButton
-                    android:id="@+id/newsView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/newsbutton" />
+                        android:id="@+id/newsView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="10dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/newsbutton" />
 
                 </LinearLayout>
 
@@ -181,28 +193,41 @@
 
         </RelativeLayout>
 
-        <Button
 
+        <!--<Button-->
+
+        <!--android:id="@+id/aboutButton"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"-->
+
+        <!--android:layout_marginStart="24dp"-->
+
+        <!--android:layout_marginEnd="24dp"-->
+        <!--android:background="@drawable/aboutbutton"-->
+        <!--android:fontFamily="sans-serif-thin"-->
+        <!--android:text="About"-->
+        <!--android:textSize="34sp"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent" />-->
+
+        <Button
             android:id="@+id/aboutButton"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="10dp"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-
+            android:layout_height="80dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="15dp"
             android:background="@drawable/aboutbutton"
             android:fontFamily="sans-serif-thin"
             android:text="About"
-            android:textSize="34dp"
-            android:layout_alignParentBottom="true"
-            />
+
+            android:textSize="34sp"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
 
-
-    </RelativeLayout>
+    </android.support.constraint.ConstraintLayout>
 
 
 </android.support.constraint.ConstraintLayout>

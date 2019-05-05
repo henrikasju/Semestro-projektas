@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TableRow;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     ImageButton galleryButton;
     ImageButton newsButton;
     Button aboutButton;
+    GridView gridView;
 
     public static FeatureDetector detectorSift;
     public static DescriptorMatcher matcher;
@@ -93,35 +95,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        cameraButton = (ImageButton) findViewById(R.id.cameraView);
+//        cameraButton = (ImageButton) findViewById(R.id.cameraView);
+//
+//        cameraButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intentLoadNewActivity = new Intent(MainActivity.this, Camera.class);
+//                startActivity(intentLoadNewActivity);
+//            }
+//        });
 
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentLoadNewActivity = new Intent(MainActivity.this, Camera.class);
-                startActivity(intentLoadNewActivity);
-            }
-        });
-
-        galleryButton = (ImageButton) findViewById(R.id.galleryView);
-
-        galleryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentLoadNewActivity = new Intent(MainActivity.this, Gallery.class);
-                startActivity(intentLoadNewActivity);
-            }
-        });
-
-        newsButton = (ImageButton) findViewById(R.id.newsView);
-
-        newsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentLoadNewActivity = new Intent(MainActivity.this, News.class);
-                startActivity(intentLoadNewActivity);
-            }
-        });
+//        galleryButton = (ImageButton) findViewById(R.id.galleryView);
+//
+//        galleryButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intentLoadNewActivity = new Intent(MainActivity.this, Gallery.class);
+//                startActivity(intentLoadNewActivity);
+//            }
+//        });
+//
+//        newsButton = (ImageButton) findViewById(R.id.newsView);
+//
+//        newsButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intentLoadNewActivity = new Intent(MainActivity.this, News.class);
+//                startActivity(intentLoadNewActivity);
+//            }
+//        });
 
         aboutButton = (Button) findViewById(R.id.aboutButton);
 
@@ -132,6 +134,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intentLoadNewActivity);
             }
         });
+
+
+
     }
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -155,38 +160,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    public class SquareImageView extends ImageButton
-    {
 
-        public SquareImageView(final Context context)
-        {
-            super(context);
-        }
-
-        public SquareImageView(final Context context, final AttributeSet attrs)
-        {
-            super(context, attrs);
-        }
-
-        public SquareImageView(final Context context, final AttributeSet attrs, final int defStyle)
-        {
-            super(context, attrs, defStyle);
-        }
-
-
-        @Override
-        protected void onMeasure(final int widthMeasureSpec, final int heightMeasureSpec)
-        {
-            final int width = getDefaultSize(getSuggestedMinimumWidth(),widthMeasureSpec);
-            setMeasuredDimension(width, width);
-        }
-
-        @Override
-        protected void onSizeChanged(final int w, final int h, final int oldw, final int oldh)
-        {
-            super.onSizeChanged(w, w, oldw, oldh);
-        }
-    }
 
 
 

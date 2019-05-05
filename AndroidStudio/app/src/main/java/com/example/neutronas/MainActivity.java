@@ -95,35 +95,35 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        cameraButton = (ImageButton) findViewById(R.id.cameraView);
-//
-//        cameraButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intentLoadNewActivity = new Intent(MainActivity.this, Camera.class);
-//                startActivity(intentLoadNewActivity);
-//            }
-//        });
+        cameraButton = (ImageButton) findViewById(R.id.cameraView);
 
-//        galleryButton = (ImageButton) findViewById(R.id.galleryView);
-//
-//        galleryButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intentLoadNewActivity = new Intent(MainActivity.this, Gallery.class);
-//                startActivity(intentLoadNewActivity);
-//            }
-//        });
-//
-//        newsButton = (ImageButton) findViewById(R.id.newsView);
-//
-//        newsButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intentLoadNewActivity = new Intent(MainActivity.this, News.class);
-//                startActivity(intentLoadNewActivity);
-//            }
-//        });
+        cameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentLoadNewActivity = new Intent(MainActivity.this, Camera.class);
+                startActivity(intentLoadNewActivity);
+            }
+        });
+
+        galleryButton = (ImageButton) findViewById(R.id.galleryView);
+
+        galleryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentLoadNewActivity = new Intent(MainActivity.this, Gallery.class);
+                startActivity(intentLoadNewActivity);
+            }
+        });
+
+        newsButton = (ImageButton) findViewById(R.id.newsView);
+
+        newsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentLoadNewActivity = new Intent(MainActivity.this, News.class);
+                startActivity(intentLoadNewActivity);
+            }
+        });
 
         aboutButton = (Button) findViewById(R.id.aboutButton);
 

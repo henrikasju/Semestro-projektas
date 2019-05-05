@@ -7,63 +7,107 @@
     android:background="@drawable/background"
     tools:context=".NoteFill">
 
-    <!--topBar-->
-    <ImageView
-        android:id="@+id/topBar"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/toppartabout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteY="-10dp" />
+        android:background="@drawable/toppartabout"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <!--BarText-->
-    <ImageView
-        android:id="@+id/note_view"
-        android:layout_width="130dp"
-        android:layout_height="70dp"
-        android:src="@drawable/topbarnote"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/topBar"
-        app:layout_constraintTop_toTopOf="@+id/topBar"
-        app:layout_constraintVertical_bias="0.013" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-    <!--BackButton-->
-    <Button
-        android:id="@+id/back_button_note"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@drawable/backbutton"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/note_view"
-        app:layout_constraintHorizontal_bias="0.029"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/topBar"
-        app:layout_constraintVertical_bias="0.014" />
+            <!--BackButton-->
+            <Button
+                android:layout_weight="1"
+                android:layout_marginTop="4dp"
+            android:id="@+id/back_button_note"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/backbutton"  />
+
+            <!--BarText-->
+            <ImageView
+                android:layout_weight="60"
+                android:layout_marginEnd="50dp"
+                android:id="@+id/note_view"
+                android:layout_width="130dp"
+                android:layout_height="70dp"
+                android:src="@drawable/topbarnote"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/topBar"
+                app:layout_constraintTop_toTopOf="@+id/topBar"
+                app:layout_constraintVertical_bias="0.013" />
+
+
+
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <!--topBar-->
+    <!--<ImageView-->
+        <!--android:id="@+id/topBar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="100dp"-->
+        <!--android:scaleType="fitXY"-->
+        <!--android:src="@drawable/toppartabout"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintHorizontal_bias="0.0"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="parent"-->
+        <!--tools:layout_editor_absoluteY="-10dp" />-->
+
+    <!--&lt;!&ndash;BarText&ndash;&gt;-->
+    <!--<ImageView-->
+        <!--android:id="@+id/note_view"-->
+        <!--android:layout_width="130dp"-->
+        <!--android:layout_height="70dp"-->
+        <!--android:src="@drawable/topbarnote"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="@+id/topBar"-->
+        <!--app:layout_constraintTop_toTopOf="@+id/topBar"-->
+        <!--app:layout_constraintVertical_bias="0.013" />-->
+
+    <!--&lt;!&ndash;BackButton&ndash;&gt;-->
+    <!--<Button-->
+        <!--android:id="@+id/back_button_note"-->
+        <!--style="@style/Widget.AppCompat.Button.Borderless"-->
+        <!--android:layout_width="50dp"-->
+        <!--android:layout_height="50dp"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:layout_marginBottom="8dp"-->
+        <!--android:background="@drawable/backbutton"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toStartOf="@+id/note_view"-->
+        <!--app:layout_constraintHorizontal_bias="0.029"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toTopOf="@+id/topBar"-->
+        <!--app:layout_constraintVertical_bias="0.014" />-->
 
     <ImageView
         android:id="@+id/note_info_box"
         android:layout_width="350dp"
-        android:layout_height="590dp"
+        android:layout_height="match_parent"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="130dp"
         android:scaleType="fitXY"
         android:src="@drawable/noteinfobox"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/note_view"
+        app:layout_constraintTop_toBottomOf="@+id/topBar"
         app:layout_constraintVertical_bias="0.415" />
 
     <com.mikhaellopez.circularimageview.CircularImageView
@@ -88,35 +132,34 @@
 
     <ImageView
         android:id="@+id/date_line"
-        android:layout_width="145dp"
+        android:layout_width="143dp"
         android:layout_height="1dp"
         android:layout_marginTop="176dp"
         android:layout_marginEnd="8dp"
         android:scaleType="fitXY"
         android:src="@drawable/notedateline"
         app:layout_constraintEnd_toEndOf="@+id/note_info_box"
-        app:layout_constraintHorizontal_bias="0.35"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/symbol_circle"
         app:layout_constraintTop_toTopOf="@+id/note_info_box" />
 
     <ImageView
         android:id="@+id/note_name_line"
-        android:layout_width="317dp"
+        android:layout_width="298dp"
         android:layout_height="0dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="48dp"
         android:scaleType="fitXY"
         android:src="@drawable/notenameline"
         app:layout_constraintEnd_toEndOf="@+id/note_info_box"
-        app:layout_constraintHorizontal_bias="0.515"
         app:layout_constraintStart_toStartOf="@+id/note_info_box"
         app:layout_constraintTop_toBottomOf="@+id/symbol_circle" />
 
     <ImageView
         android:id="@+id/note_text_box"
-        android:layout_width="317dp"
-        android:layout_height="335dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="300dp"
+        android:layout_height="305dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="35dp"
         android:scaleType="fitXY"
         android:src="@drawable/notetextarea"
         app:layout_constraintBottom_toBottomOf="@+id/note_info_box"
@@ -124,6 +167,31 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/note_info_box"
         app:layout_constraintTop_toTopOf="@+id/note_name_line" />
+
+    <EditText
+        android:background="@android:color/transparent"
+        android:id="@+id/editText"
+        android:layout_width="143dp"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:inputType="date"
+        android:hint="yyyy-mm-dd"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/date_line"
+        app:layout_constraintRight_toRightOf="@id/date_line"
+        app:layout_constraintStart_toEndOf="@+id/symbol_circle" />
+
+    <EditText
+        android:id="@+id/editText2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:hint="Name the note :)"
+        android:textAlignment="center"
+        android:inputType="text"
+        app:layout_constraintBottom_toBottomOf="@+id/note_name_line"
+        app:layout_constraintEnd_toEndOf="@+id/note_name_line"
+        app:layout_constraintStart_toStartOf="@+id/note_name_line" />
 
 
 </android.support.constraint.ConstraintLayout>

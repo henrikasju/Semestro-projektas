@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.mikhaellopez.circularimageview.CircularImageView;
@@ -15,9 +17,12 @@ import com.mikhaellopez.circularimageview.CircularImageView;
 public class NoteFill extends AppCompatActivity {
 
     Button backButton;
+    ImageButton saveButton;
     //ImageView symbolView;
     String imagePath = null;
     CircularImageView symbolView;
+    EditText dateText;
+    EditText noteNameText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +30,10 @@ public class NoteFill extends AppCompatActivity {
         setContentView(R.layout.activity_note_fill);
 
         backButton = (Button) findViewById(R.id.back_button_note);
+        saveButton = (ImageButton) findViewById(R.id.save_button);
+        dateText = (EditText) findViewById(R.id.dateText);
+        noteNameText = (EditText) findViewById(R.id.noteNameText);
+
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,6 +52,14 @@ public class NoteFill extends AppCompatActivity {
             System.out.println("Photo path : " + imagePath);
             //setPic(imagePath);
         }
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                noteNameText.setText(new String(dateText.getText().toString() + " note added!" ));
+            }
+        });
     }
 
     public void onWindowFocusChanged(boolean hasFocus)
@@ -77,4 +94,6 @@ public class NoteFill extends AppCompatActivity {
         Bitmap bitmap = BitmapFactory.decodeFile(filePath);
         symbolView.setImageBitmap(bitmap);
     }
+
+
 }

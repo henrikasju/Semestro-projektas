@@ -1,14 +1,24 @@
 package com.example.neutronas;
 
+import android.arch.persistence.room.Room;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Gallery extends AppCompatActivity {
 
     Button backButton;
+    RecyclerView recyclerView;
+    RecyclerView.Adapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,6 +26,35 @@ public class Gallery extends AppCompatActivity {
         setContentView(R.layout.activity_gallery);
 
         backButton = (Button) findViewById(R.id.back_button_gallery);
+        recyclerView = findViewById(R.id.recyclerView);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setHasFixedSize(true);
+//        ArrayList<Note> notes = new ArrayList<>();
+//        for (int i = 0; i < 30; i++) {
+//            Note note = new Note("path", "2019-05-11", "NoteName [" + i + "]", "Description");
+//            notes.add(note);
+//
+//        }
+
+        AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "note")
+                .allowMainThreadQueries()
+                .build();
+
+        List<Note> notes = db.noteDao().getAllNotes();
+
+        ArrayList<Bitmap> photos = new ArrayList<>();
+        for (int i = 0; i < notes.size(); i++) {
+            Bitmap bitmap = BitmapFactory.decodeFile(notes.get(i).getNotePhotoPath());
+
+            Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 500,500, true);
+            photos.add(scaled);
+        }
+
+
+        adapter = new NoteAdapter(notes, photos);
+
+        recyclerView.setAdapter(adapter);
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override

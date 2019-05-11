@@ -1,5 +1,6 @@
 package com.example.neutronas;
 
+import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,8 +22,10 @@ public class NoteFill extends AppCompatActivity {
     //ImageView symbolView;
     String imagePath = null;
     CircularImageView symbolView;
+
     EditText dateText;
     EditText noteNameText;
+    EditText noteDescriptionText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,7 @@ public class NoteFill extends AppCompatActivity {
         saveButton = (ImageButton) findViewById(R.id.save_button);
         dateText = (EditText) findViewById(R.id.dateText);
         noteNameText = (EditText) findViewById(R.id.noteNameText);
+        noteDescriptionText = (EditText) findViewById(R.id.noteDescriptionText);
 
 
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -53,11 +57,26 @@ public class NoteFill extends AppCompatActivity {
             //setPic(imagePath);
         }
 
+        String date = imagePath.substring(imagePath.indexOf("JPEG_") + 5,imagePath.indexOf("JPEG_") + 8 + 5);
+        date = date.substring(0,4) + "-" + date.substring(4,6) + "-" + date.substring(6,8);
+
+
+        dateText.setText(date);
+        dateText.setEnabled(false);
+
+
+
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // TODO: 2019-05-11 Save to database
+                AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "note")
+                        .allowMainThreadQueries()
+                        .build();
 
-                noteNameText.setText(new String(dateText.getText().toString() + " note added!" ));
+                Note note = new Note(imagePath, dateText.getText().toString(), noteNameText.getText().toString(), noteDescriptionText.getText().toString());
+                db.noteDao().insertAll(note);
+                startActivity(new Intent(NoteFill.this, Gallery.class));
             }
         });
     }

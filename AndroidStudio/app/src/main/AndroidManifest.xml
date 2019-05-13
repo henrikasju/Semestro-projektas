@@ -4,7 +4,22 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.front.autofocus"
+        android:required="false" />
+    <uses-feature android:name="android.hardware.camera2.full" />
 
     <application
         android:allowBackup="true"
@@ -14,7 +29,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Test"></activity>
-        <activity android:name=".KeyPointDetector" />
         <activity android:name=".NoteFill"
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
@@ -31,9 +45,8 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"/>
         <activity android:name=".Scan" />
-        <activity android:name=".ScaningCV" />
-        <activity android:name=".DetectKeypoints" />
-        <activity android:name=".OpenCVCamera" />
+        <activity android:name=".PatternCamera" />
+        <activity android:name=".Detector" />
         <activity android:name=".MainActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait">

@@ -9,7 +9,6 @@ import android.widget.Button;
 public class About extends AppCompatActivity {
 
     Button backButton;
-    Button testButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,29 +25,19 @@ public class About extends AppCompatActivity {
             }
         });
 
-        testButton = (Button) findViewById(R.id.testButton);
-
-        testButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentLoadNewActivity = new Intent(About.this, MainActivity.class);
-                startActivity(intentLoadNewActivity);
-            }
-        });
-
-        Button startButton = findViewById(R.id.start_button);
+        Button startButton = findViewById(R.id.pattern_camera_button);
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent cvIntent = new Intent(About.this, OpenCVCamera.class);
+                Intent cvIntent = new Intent(About.this, PatternCamera.class);
                 startActivity(cvIntent);
             }
         });
-        Button scannerButton = (Button)findViewById(R.id.keypoint_button);
+        Button scannerButton = (Button)findViewById(R.id.matcher_button);
         scannerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent cvIntent = new Intent(About.this, DetectKeypoints.class);
+                Intent cvIntent = new Intent(About.this, Detector.class);
                 startActivity(cvIntent);
             }
         });

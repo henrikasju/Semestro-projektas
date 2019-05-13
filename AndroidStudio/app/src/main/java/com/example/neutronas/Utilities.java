@@ -17,16 +17,8 @@ public class Utilities {
 
     }
 
-
     public static String generateFilename(){
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-        return NAME = "LOGO-" + sdf.format(new Date()) + ".jpg";
+        return NAME = "PATTERN-" + sdf.format(new Date()) + ".jpeg";
     }
-
-
-    public static void convertBitmapToMat(Bitmap bitmap, Mat mat){
-        Utils.bitmapToMat(bitmap, mat);
-        //Core.ro
-    }
-
 }

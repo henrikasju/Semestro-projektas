@@ -1,8 +1,12 @@
 package com.example.neutronas;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -16,9 +20,12 @@ import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -31,9 +38,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-
-import com.example.neutronas.Constants;
-import com.example.neutronas.Utilities;
+import org.opencv.android.Utils;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.imgcodecs.Imgcodecs;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,6 +55,9 @@ import java.util.List;
 
 public class PatternCamera extends AppCompatActivity {
 
+    // TODO: Handle all crashes and back button
+
+    final int PIC_CROP = 3;
     public static String currentPhotoPath;
     private static final String TAG = "ObjectRecognition";
     private ImageView takePictureButton;
@@ -65,7 +76,8 @@ public class PatternCamera extends AppCompatActivity {
     protected CaptureRequest.Builder captureRequestBuilder;
     private Size imageDimension;
     private ImageReader imageReader;
-    private File file;
+    private File picFile;
+    private Uri picUri;
     private static final int REQUEST_CAMERA_PERMISSION = 200;
     private boolean mFlashSupported;
     private Handler mBackgroundHandler;
@@ -126,9 +138,8 @@ public class PatternCamera extends AppCompatActivity {
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
             super.onCaptureCompleted(session, request, result);
-            Toast.makeText(PatternCamera.this, "Saved:" + file, Toast.LENGTH_SHORT).show();
+            Toast.makeText(PatternCamera.this, "Saved:" + picFile, Toast.LENGTH_SHORT).show();
             createCameraPreview();
-            currentPhotoPath = file.getAbsolutePath();
         }
     };
     protected void startBackgroundThread() {
@@ -213,8 +224,13 @@ public class PatternCamera extends AppCompatActivity {
                 public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
                     Toast.makeText(PatternCamera.this, "Saved:" + file, Toast.LENGTH_SHORT).show();
-                    currentPhotoPath = file.getAbsolutePath();
-                    createCameraPreview();
+                    picFile = file;
+                    closeCamera();
+                    requestCrop();
+                    //Uri uri = Uri.fromFile(file);
+                    //picUri = uri;
+                    //performCrop();
+                    //createCameraPreview();
                 }
             };
             cameraDevice.createCaptureSession(outputSurfaces, new CameraCaptureSession.StateCallback() {
@@ -303,6 +319,49 @@ public class PatternCamera extends AppCompatActivity {
             imageReader = null;
         }
     }
+    private void requestCrop() {
+        //currentPhotoPath = picFile.getAbsolutePath();
+        Uri uri = Uri.fromFile(picFile);
+        picUri = uri;
+        performCrop();
+    }
+    private void performCrop() {
+        try {
+            // Call the standard crop action intent (the user device may not support it)
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
+            // Indicate image type and Uri
+            cropIntent.setDataAndType(picUri, "image/*");
+            // Set crop properties
+            cropIntent.putExtra("crop", "true");
+            //indicate aspect of desired crop
+            cropIntent.putExtra("aspectX", 1);
+            cropIntent.putExtra("aspectY", 1);
+            //indicate output X and Y
+            cropIntent.putExtra("outputX", 256);
+            cropIntent.putExtra("outputY", 256);
+
+            Toast.makeText(PatternCamera.this, "Precisely crop the template.", Toast.LENGTH_LONG).show();
+            File f = new File(Environment.getExternalStorageDirectory(),
+                    "/temporary_holder.jpg");
+            try {
+                f.createNewFile();
+            } catch (IOException ex) {
+                Log.e("io", ex.getMessage());
+            }
+
+            Uri uri = Uri.fromFile(f);
+
+            cropIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+
+            // Start the activity - we handle returning in onActivityResult
+            startActivityForResult(cropIntent, PIC_CROP);
+        }
+        catch(ActivityNotFoundException anfe){
+            //display an error message
+            String errorMessage = "Your device doesn't support the crop action!";
+            Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+        }
+    }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
@@ -330,5 +389,25 @@ public class PatternCamera extends AppCompatActivity {
         //closeCamera();
         stopBackgroundThread();
         super.onPause();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == PIC_CROP) {
+            closeCamera();
+            String filePath = Environment.getExternalStorageDirectory() + "/temporary_holder.jpg";
+            try {
+                currentPhotoPath = picFile.getAbsolutePath();
+                Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+                Mat obj = new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC4);
+                Utils.bitmapToMat(bitmap, obj);
+                Imgcodecs.imwrite(currentPhotoPath, obj);
+                Intent intent = new Intent(PatternCamera.this, Detector.class);
+                startActivity(intent);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

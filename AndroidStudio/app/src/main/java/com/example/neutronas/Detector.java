@@ -42,20 +42,21 @@ public class Detector extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detector);
-        // Comment line 46 and uncomment 47, to read existing photo, instead of taking a new one.
-        File inFile = new File(currentPhotoPath);
-        //File inFile = new File(Environment.getExternalStorageDirectory() + "/imagetempl.jpg");
+        // Cropped template image from PatternCamera
+        File template = new File(currentPhotoPath);
+        // Scene image currently from phone storage
+        File scene = new File(Environment.getExternalStorageDirectory() + "/imagetempl.jpg");
         System.out.println(currentPhotoPath);
-        File templ = new File(Environment.getExternalStorageDirectory() + "/Untitled.png");
-        if(inFile.exists()) {
-            run(inFile, templ, Environment.getExternalStorageDirectory() + "/matched.jpg");
+        if(scene.exists() && template.exists()) {
+            run(scene, template, Environment.getExternalStorageDirectory() + "/matched.jpg");
         }
     }
 
-    private Bitmap setPic() {
+    // Currently useless method
+    /*private Bitmap setPic() {
         // Get the dimensions of the View
-        int targetW = 1680;
-        int targetH = 945;
+        int targetW = 750;
+        int targetH = 355;
 
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -73,15 +74,15 @@ public class Detector extends AppCompatActivity {
 
         Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
         return bitmap;
-    }
+    }*/
 
-    public void run(File inFile, File templateFile, String outFile) {
-        // Uncomment line 79 and comment line 82,83 to read existing scene file instead of taking a picture.
-        //Mat scene = Imgcodecs.imread(inFile.getAbsolutePath(), Imgcodecs.IMREAD_GRAYSCALE);
+    public void run(File sceneFile, File templateFile, String outFile) {
+        // No need to resize currently, as we take a cropped image
+        Mat scene = Imgcodecs.imread(sceneFile.getAbsolutePath(), Imgcodecs.IMREAD_GRAYSCALE);
 
-        // Resize captured picture to not overload memory
-        Mat scene = new Mat();
-        Utils.bitmapToMat(setPic(), scene);
+        // Resize captured picture to not overload memory (setPic())
+        //Mat scene = new Mat();
+        //Utils.bitmapToMat(setPic(), scene);
         Mat pattern = Imgcodecs.imread(templateFile.getAbsolutePath(), Imgcodecs.IMREAD_GRAYSCALE);
         Mat matchOutput = new Mat();
 
@@ -163,10 +164,11 @@ public class Detector extends AppCompatActivity {
         MatOfDMatch goodMatches = new MatOfDMatch(listOfGoodMatches.toArray(new DMatch[listOfGoodMatches.size()]));
         Features2d.drawMatches(pattern, patternKeypoints, scene, sceneKeypoints, goodMatches, matchOutput);
 
-        Bitmap test = Bitmap.createBitmap(scene.cols(), scene.rows(), Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(scene, test);
-        ImageView image = this.findViewById(R.id.pattern_picture);
-        image.setImageBitmap(test);
+        // Showing scene image in a second imageView (blackbackground bug in matched image)
+        //Bitmap test = Bitmap.createBitmap(scene.cols(), scene.rows(), Bitmap.Config.ARGB_8888);
+        //Utils.matToBitmap(scene, test);
+        //ImageView image = this.findViewById(R.id.pattern_picture);
+        //image.setImageBitmap(test);
 
         System.out.println("Amount of good matches:" + listOfGoodMatches.size());
         TextView template = this.findViewById(R.id.textView);

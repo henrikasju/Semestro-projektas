@@ -33,13 +33,5 @@ public class About extends AppCompatActivity {
                 startActivity(cvIntent);
             }
         });
-        Button scannerButton = (Button)findViewById(R.id.matcher_button);
-        scannerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent cvIntent = new Intent(About.this, Detector.class);
-                startActivity(cvIntent);
-            }
-        });
     }
 }

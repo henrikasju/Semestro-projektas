@@ -19,6 +19,10 @@ public class Utilities {
 
     public static String generateFilename(){
         @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-        return NAME = "PATTERN-" + sdf.format(new Date()) + ".jpeg";
+        return NAME = "PATTERN-" + sdf.format(new Date()) + ".jpg";
+    }
+    public static String generatePatternName(){
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+        return NAME = "CROPPED-" + sdf.format(new Date()) + ".jpg";
     }
 }

@@ -53,9 +53,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class PatternCamera extends AppCompatActivity {
+import static com.example.neutronas.Utilities.generatePatternName;
 
-    // TODO: Handle all crashes and back button
+public class PatternCamera extends AppCompatActivity {
 
     final int PIC_CROP = 3;
     public static String currentPhotoPath;
@@ -340,7 +340,6 @@ public class PatternCamera extends AppCompatActivity {
             cropIntent.putExtra("outputX", 256);
             cropIntent.putExtra("outputY", 256);
 
-            Toast.makeText(PatternCamera.this, "Precisely crop the template.", Toast.LENGTH_LONG).show();
             File f = new File(Environment.getExternalStorageDirectory(),
                     "/temporary_holder.jpg");
             try {
@@ -358,7 +357,7 @@ public class PatternCamera extends AppCompatActivity {
         }
         catch(ActivityNotFoundException anfe){
             //display an error message
-            String errorMessage = "Your device doesn't support the crop action!";
+            String errorMessage = "Your device does not support image cropping.";
             Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
         }
     }

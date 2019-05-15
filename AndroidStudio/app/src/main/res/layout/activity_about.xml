@@ -77,14 +77,29 @@
         android:id="@+id/pattern_camera_button"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="28dp"
         android:paddingStart="20dp"
         android:paddingLeft="20dp"
         android:paddingEnd="20dp"
         android:paddingRight="20dp"
         android:text="Pattern Camera"
+        app:layout_constraintBottom_toTopOf="@+id/match_button"
+        app:layout_constraintEnd_toEndOf="@+id/whiteBox"
+        app:layout_constraintStart_toStartOf="@+id/whiteBox" />
+
+    <Button
+        android:id="@+id/match_button"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="104dp"
+        android:paddingStart="20dp"
+        android:paddingLeft="20dp"
+        android:paddingEnd="20dp"
+        android:paddingRight="20dp"
+        android:text="Match"
         app:layout_constraintBottom_toBottomOf="@+id/whiteBox"
         app:layout_constraintEnd_toEndOf="@+id/whiteBox"
-        app:layout_constraintStart_toStartOf="@+id/whiteBox"
-        app:layout_constraintTop_toTopOf="@+id/whiteBox" />
+        app:layout_constraintStart_toStartOf="@+id/whiteBox" />
+
 
 </android.support.constraint.ConstraintLayout>

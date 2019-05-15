@@ -1,5 +1,6 @@
 package com.example.neutronas;
 
+import android.arch.persistence.room.Room;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.opencv.android.Utils;
 import org.opencv.calib3d.Calib3d;
@@ -37,31 +39,68 @@ import static com.example.neutronas.PatternCamera.currentPhotoPath;
 public class Detector extends AppCompatActivity {
 
     private static AKAZE detector = MainActivity.detector;
+    private String bestMatchPath = "nomatch";
+    private int maxKeypoints = -1;
+    private Mat matchOutput = new Mat();
+    private String outFile = Environment.getExternalStorageDirectory() + "/matched.jpg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detector);
+        TextView textView = this.findViewById(R.id.textView);
+
+        // Load the database
+        AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "note")
+                .allowMainThreadQueries()
+                .build();
+
+        // Get notes from DB
+        List<Note> notes = db.noteDao().getAllNotes();
+
         // Cropped template image from PatternCamera
         File template = new File(currentPhotoPath);
-        // Scene image currently from phone storage
-        File scene = new File(Environment.getExternalStorageDirectory() + "/imagetempl.jpg");
-        System.out.println(currentPhotoPath);
-        if(scene.exists() && template.exists()) {
-            run(scene, template, Environment.getExternalStorageDirectory() + "/matched.jpg");
+        for (int i = 0; i < notes.size(); i++) {
+            // Get path of the i-nth image in gallery
+            File scene = new File(notes.get(i).getNotePhotoPath());
+            if (scene.exists() && template.exists()) {
+                matchOutput = run(scene, template);
+            }
+        }
+        if (maxKeypoints == -1 || bestMatchPath == "nomatch") {
+            Toast.makeText(Detector.this, "Match not found. Try taking a better picture.", Toast.LENGTH_LONG).show();
+            System.out.println("Match not found!");
+        }
+        // If matched
+        else {
+            ImageView matched = this.findViewById(R.id.display_keypoints);
+            Bitmap matchedBitmap = Bitmap.createBitmap(matchOutput.cols(), matchOutput.rows(), Bitmap.Config.ARGB_8888);
+
+            // Convert matrix to bitmap
+            Utils.matToBitmap(matchOutput, matchedBitmap);
+
+            // Show matched image in app
+            matched.setImageBitmap(matchedBitmap);
+
+            // Print out AKAZE information
+            Imgcodecs.imwrite(outFile, matchOutput);
+
+            String text = "<font color=#00ee59>\nIt's A MATCH!<br></font>";
+            textView.setText(Html.fromHtml(text));
+            System.out.println("Match successful!");
         }
     }
 
     // Currently useless method
-    /*private Bitmap setPic() {
+    private Bitmap setPic(String path) {
         // Get the dimensions of the View
-        int targetW = 750;
-        int targetH = 355;
+        int targetW = 600;
+        int targetH = 450;
 
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
         bmOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
+        BitmapFactory.decodeFile(path, bmOptions);
         int photoW = bmOptions.outWidth;
         int photoH = bmOptions.outHeight;
 
@@ -72,17 +111,14 @@ public class Detector extends AppCompatActivity {
         bmOptions.inJustDecodeBounds = false;
         bmOptions.inSampleSize = scaleFactor;
 
-        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
+        Bitmap bitmap = BitmapFactory.decodeFile(path, bmOptions);
         return bitmap;
-    }*/
+    }
 
-    public void run(File sceneFile, File templateFile, String outFile) {
-        // No need to resize currently, as we take a cropped image
-        Mat scene = Imgcodecs.imread(sceneFile.getAbsolutePath(), Imgcodecs.IMREAD_GRAYSCALE);
-
+    public Mat run(File sceneFile, File templateFile) {
         // Resize captured picture to not overload memory (setPic())
-        //Mat scene = new Mat();
-        //Utils.bitmapToMat(setPic(), scene);
+        Mat scene = new Mat();
+        Utils.bitmapToMat(setPic(sceneFile.getAbsolutePath()), scene);
         Mat pattern = Imgcodecs.imread(templateFile.getAbsolutePath(), Imgcodecs.IMREAD_GRAYSCALE);
         Mat matchOutput = new Mat();
 
@@ -110,17 +146,23 @@ public class Detector extends AppCompatActivity {
         LinkedList<Point> objList = new LinkedList<Point>();
         LinkedList<Point> sceneList = new LinkedList<Point>();
 
-        // Add matches to a list
-        for (int i = 0; i < knnMatches.size(); i++) {
-            DMatch[] matches = knnMatches.get(i).toArray();
-            float dist1 = matches[0].distance;
-            float dist2 = matches[1].distance;
-            if (dist1 < ratioThreshold * dist2) {
-                listOfMatched1.add(listOfKeypoints1.get(matches[0].queryIdx));
-                listOfMatched2.add(listOfKeypoints2.get(matches[0].trainIdx));
-                objList.add(listOfKeypoints1.get(matches[0].queryIdx).pt);
-                sceneList.add(listOfKeypoints2.get(matches[0].trainIdx).pt);
+        // Prevent crashing with bad gallery images
+        try {
+            // Add matches to a list
+            for (int i = 0; i < knnMatches.size(); i++) {
+                DMatch[] matches = knnMatches.get(i).toArray();
+                float dist1 = matches[0].distance;
+                float dist2 = matches[1].distance;
+                if (dist1 < ratioThreshold * dist2) {
+                    listOfMatched1.add(listOfKeypoints1.get(matches[0].queryIdx));
+                    listOfMatched2.add(listOfKeypoints2.get(matches[0].trainIdx));
+                    objList.add(listOfKeypoints1.get(matches[0].queryIdx).pt);
+                    sceneList.add(listOfKeypoints2.get(matches[0].trainIdx).pt);
+                }
             }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
         }
 
         MatOfPoint2f points1 = new MatOfPoint2f(), points2 = new MatOfPoint2f();
@@ -128,7 +170,13 @@ public class Detector extends AppCompatActivity {
         points2.fromList(sceneList);
 
         // Get homography of the picture
-        Mat homo = Calib3d.findHomography(points1, points2, Calib3d.RANSAC);
+        Mat homo = new Mat();
+        try {
+            homo = Calib3d.findHomography(points1, points2, Calib3d.RANSAC);
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
 
         // Distance threshold to identify inliers with homography check
         double inlierThreshold = 2.5;
@@ -137,25 +185,30 @@ public class Detector extends AppCompatActivity {
         List<DMatch> listOfGoodMatches = new ArrayList<>();
 
         // Filter out only good keypoints
-        for (int i = 0; i < listOfMatched1.size(); i++) {
-            Mat col = new Mat(3, 1, CvType.CV_64F);
-            double[] colData = new double[(int) (col.total() * col.channels())];
-            colData[0] = listOfMatched1.get(i).pt.x;
-            colData[1] = listOfMatched1.get(i).pt.y;
-            colData[2] = 1.0;
-            col.put(0, 0, colData);
-            Mat colRes = new Mat();
-            Core.gemm(homo, col, 1.0, new Mat(), 0.0, colRes);
-            colRes.get(0, 0, colData);
-            Core.multiply(colRes, new Scalar(1.0 / colData[2]), col);
-            col.get(0, 0, colData);
-            double dist = Math.sqrt(Math.pow(colData[0] - listOfMatched2.get(i).pt.x, 2) +
-                    Math.pow(colData[1] - listOfMatched2.get(i).pt.y, 2));
-            if (dist < inlierThreshold) {
-                listOfGoodMatches.add(new DMatch(listOfInliers1.size(), listOfInliers2.size(), 0));
-                listOfInliers1.add(listOfMatched1.get(i));
-                listOfInliers2.add(listOfMatched2.get(i));
+        try {
+            for (int i = 0; i < listOfMatched1.size(); i++) {
+                Mat col = new Mat(3, 1, CvType.CV_64F);
+                double[] colData = new double[(int) (col.total() * col.channels())];
+                colData[0] = listOfMatched1.get(i).pt.x;
+                colData[1] = listOfMatched1.get(i).pt.y;
+                colData[2] = 1.0;
+                col.put(0, 0, colData);
+                Mat colRes = new Mat();
+                Core.gemm(homo, col, 1.0, new Mat(), 0.0, colRes);
+                colRes.get(0, 0, colData);
+                Core.multiply(colRes, new Scalar(1.0 / colData[2]), col);
+                col.get(0, 0, colData);
+                double dist = Math.sqrt(Math.pow(colData[0] - listOfMatched2.get(i).pt.x, 2) +
+                        Math.pow(colData[1] - listOfMatched2.get(i).pt.y, 2));
+                if (dist < inlierThreshold) {
+                    listOfGoodMatches.add(new DMatch(listOfInliers1.size(), listOfInliers2.size(), 0));
+                    listOfInliers1.add(listOfMatched1.get(i));
+                    listOfInliers2.add(listOfMatched2.get(i));
+                }
             }
+        }
+        catch(Exception e) {
+            e.printStackTrace();
         }
 
         // Draw good matches
@@ -165,76 +218,24 @@ public class Detector extends AppCompatActivity {
         Features2d.drawMatches(pattern, patternKeypoints, scene, sceneKeypoints, goodMatches, matchOutput);
 
         // Showing scene image in a second imageView (blackbackground bug in matched image)
-        //Bitmap test = Bitmap.createBitmap(scene.cols(), scene.rows(), Bitmap.Config.ARGB_8888);
-        //Utils.matToBitmap(scene, test);
-        //ImageView image = this.findViewById(R.id.pattern_picture);
-        //image.setImageBitmap(test);
+        Bitmap test = Bitmap.createBitmap(scene.cols(), scene.rows(), Bitmap.Config.ARGB_8888);
+        Utils.matToBitmap(scene, test);
+        ImageView image = this.findViewById(R.id.pattern_picture);
+        image.setImageBitmap(test);
 
         System.out.println("Amount of good matches:" + listOfGoodMatches.size());
-        TextView template = this.findViewById(R.id.textView);
+        //TextView template = this.findViewById(R.id.textView);
 
+        // Get the best match form the gallery
         double inlierRatio = listOfInliers1.size() / (double) listOfMatched1.size();
         if (listOfGoodMatches.size() > 20) {
-            String text = "<font color=#00ee59>" +
-                    "\nIt's A MATCH!<br>" +
-                    "\nA-KAZE Matching Results<br>" +
-                    "\n===============================<br>" +
-                    "\n# Keypoints 1:                        \t" + listOfKeypoints1.size() + "<br>" +
-                    "\n# Keypoints 2:                        \t" + listOfKeypoints2.size() + "<br>" +
-                    "\n# Matches:                            \t" + listOfMatched1.size() + "<br>" +
-                    "\n# Inliers:                            \t" + listOfInliers1.size() + "<br>" +
-                    "\n# Inliers Ratio:                      \t" + inlierRatio + "<br></font>";
-            template.setText(Html.fromHtml(text));
-
-            Mat objCorners = new Mat(4, 1, CvType.CV_32FC2), sceneCorners = new Mat();
-            float[] objCornersData = new float[(int) (objCorners.total() * objCorners.channels())];
-            objCorners.get(0, 0, objCornersData);
-            objCornersData[0] = 0;
-            objCornersData[1] = 0;
-            objCornersData[2] = pattern.cols();
-            objCornersData[3] = 0;
-            objCornersData[4] = pattern.cols();
-            objCornersData[5] = pattern.rows();
-            objCornersData[6] = 0;
-            objCornersData[7] = pattern.rows();
-            objCorners.put(0, 0, objCornersData);
-
-            Core.perspectiveTransform(objCorners, sceneCorners, homo);
-
-            float[] sceneCornersData = new float[(int) (sceneCorners.total() * sceneCorners.channels())];
-            sceneCorners.get(0, 0, sceneCornersData);
-
-            Imgproc.line(matchOutput, new Point(sceneCornersData[0] + pattern.cols(), sceneCornersData[1]), new Point(sceneCornersData[2] + pattern.cols(), sceneCornersData[3]), new Scalar(255, 255, 255), 4);
-            Imgproc.line(matchOutput, new Point(sceneCornersData[2] + pattern.cols(), sceneCornersData[3]), new Point(sceneCornersData[4] + pattern.cols(), sceneCornersData[5]), new Scalar(255, 255, 255), 4);
-            Imgproc.line(matchOutput, new Point(sceneCornersData[4] + pattern.cols(), sceneCornersData[5]), new Point(sceneCornersData[6] + pattern.cols(), sceneCornersData[7]), new Scalar(255, 255, 255), 4);
-            Imgproc.line(matchOutput, new Point(sceneCornersData[6] + pattern.cols(), sceneCornersData[7]), new Point(sceneCornersData[0] + pattern.cols(), sceneCornersData[1]), new Scalar(255, 255, 255), 4);
-        }
-        else {
-            String text = "<font color=#ee4511>" +
-                    "\nNo pattern found!<br>"+
-                    "\nA-KAZE Matching Results<br>" +
-                    "\n===============================<br>" +
-                    "\n# Keypoints 1:                        \t" + listOfKeypoints1.size() + "<br>" +
-                    "\n# Keypoints 2:                        \t" + listOfKeypoints2.size() + "<br>" +
-                    "\n# Matches:                            \t" + listOfMatched1.size() + "<br>" +
-                    "\n# Inliers:                            \t" + listOfInliers1.size() + "<br>" +
-                    "\n# Inliers Ratio:                      \t" + inlierRatio + "<br></font>";
-            template.setText(Html.fromHtml(text));
+            if (maxKeypoints < listOfGoodMatches.size()) {
+                maxKeypoints = listOfGoodMatches.size();
+                bestMatchPath = sceneFile.getAbsolutePath();
+            }
         }
 
-        ImageView matched = this.findViewById(R.id.display_keypoints);
-        Bitmap matchedBitmap = Bitmap.createBitmap(matchOutput.cols(), matchOutput.rows(), Bitmap.Config.ARGB_8888);
-
-
-
-        // Convert matrix to bitmap
-        Utils.matToBitmap(matchOutput, matchedBitmap);
-
-        // Show matched image in app
-        matched.setImageBitmap(matchedBitmap);
-
-        // Print out AKAZE information
-        Imgcodecs.imwrite(outFile, matchOutput);
+        // Print picture information after each cycle
         System.out.println("A-KAZE Matching Results");
         System.out.println("*******************************");
         System.out.println("# Keypoints 1:                        \t" + listOfKeypoints1.size());
@@ -242,5 +243,7 @@ public class Detector extends AppCompatActivity {
         System.out.println("# Matches:                            \t" + listOfMatched1.size());
         System.out.println("# Inliers:                            \t" + listOfInliers1.size());
         System.out.println("# Inliers Ratio:                      \t" + inlierRatio);
+        return matchOutput;
     }
+    // TODO: Show matched image notes
 }

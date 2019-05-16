@@ -53,8 +53,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.example.neutronas.Utilities.generatePatternName;
-
 public class PatternCamera extends AppCompatActivity {
 
     final int PIC_CROP = 3;
@@ -86,7 +84,7 @@ public class PatternCamera extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pattern_camera);
-        textureView = (TextureView) findViewById(R.id.pattern_camera);
+        textureView = findViewById(R.id.pattern_camera);
         assert textureView != null;
         textureView.setSurfaceTextureListener(textureListener);
         takePictureButton = findViewById(R.id.shutter_button);
@@ -185,6 +183,10 @@ public class PatternCamera extends AppCompatActivity {
             // Orientation
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
+            if (!Environment.getExternalStorageDirectory().exists()) {
+                File file = new File(Constants.SCAN_IMAGE_LOCATION);
+                file.mkdir();
+            }
             final File file = new File(Constants.SCAN_IMAGE_LOCATION + File.separator + Utilities.generateFilename());
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +28,6 @@ import org.opencv.features2d.AKAZE;
 import org.opencv.features2d.DescriptorMatcher;
 import org.opencv.features2d.Features2d;
 import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,7 +41,8 @@ public class Detector extends AppCompatActivity {
     private static AKAZE detector = MainActivity.detector;
     private String bestMatchPath = "nomatch";
     private int maxKeypoints = -1;
-    private Mat matchOutput = new Mat();
+    private int foundBetter = 0;
+    private Mat matchOutput = new Mat(), output = new Mat();
     private String outFile = Environment.getExternalStorageDirectory() + "/matched.jpg";
 
     @Override
@@ -49,7 +50,6 @@ public class Detector extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detector);
         TextView textView = this.findViewById(R.id.textView);
-
         // Load the database
         AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "note")
                 .allowMainThreadQueries()
@@ -64,10 +64,14 @@ public class Detector extends AppCompatActivity {
             // Get path of the i-nth image in gallery
             File scene = new File(notes.get(i).getNotePhotoPath());
             if (scene.exists() && template.exists()) {
-                matchOutput = run(scene, template);
+                output = run(scene, template);
+                if (foundBetter < maxKeypoints) {
+                    foundBetter = maxKeypoints;
+                    matchOutput = output;
+                }
             }
         }
-        if (maxKeypoints == -1 || bestMatchPath == "nomatch") {
+        if (maxKeypoints == -1 || bestMatchPath == "nomatch" || matchOutput == null) {
             Toast.makeText(Detector.this, "Match not found. Try taking a better picture.", Toast.LENGTH_LONG).show();
             System.out.println("Match not found!");
         }
@@ -88,14 +92,19 @@ public class Detector extends AppCompatActivity {
             String text = "<font color=#00ee59>\nIt's A MATCH!<br></font>";
             textView.setText(Html.fromHtml(text));
             System.out.println("Match successful!");
+
+            // Showing scene image in a second imageView (blackbackground bug in matched image)
+            Bitmap test = BitmapFactory.decodeFile(bestMatchPath);
+            ImageView image = this.findViewById(R.id.pattern_picture);
+            image.setImageBitmap(test);
         }
     }
 
     // Currently useless method
-    private Bitmap setPic(String path) {
+    private Bitmap setPic(String path, int width, int height) {
         // Get the dimensions of the View
-        int targetW = 600;
-        int targetH = 450;
+        int targetW = width; // 600
+        int targetH = height; // 450
 
         // Get the dimensions of the bitmap
         BitmapFactory.Options bmOptions = new BitmapFactory.Options();
@@ -118,7 +127,7 @@ public class Detector extends AppCompatActivity {
     public Mat run(File sceneFile, File templateFile) {
         // Resize captured picture to not overload memory (setPic())
         Mat scene = new Mat();
-        Utils.bitmapToMat(setPic(sceneFile.getAbsolutePath()), scene);
+        Utils.bitmapToMat(setPic(sceneFile.getAbsolutePath(), 300, 168), scene);
         Mat pattern = Imgcodecs.imread(templateFile.getAbsolutePath(), Imgcodecs.IMREAD_GRAYSCALE);
         Mat matchOutput = new Mat();
 
@@ -216,12 +225,6 @@ public class Detector extends AppCompatActivity {
         MatOfKeyPoint sceneKeypoints = new MatOfKeyPoint(listOfInliers2.toArray(new KeyPoint[listOfInliers2.size()]));
         MatOfDMatch goodMatches = new MatOfDMatch(listOfGoodMatches.toArray(new DMatch[listOfGoodMatches.size()]));
         Features2d.drawMatches(pattern, patternKeypoints, scene, sceneKeypoints, goodMatches, matchOutput);
-
-        // Showing scene image in a second imageView (blackbackground bug in matched image)
-        Bitmap test = Bitmap.createBitmap(scene.cols(), scene.rows(), Bitmap.Config.ARGB_8888);
-        Utils.matToBitmap(scene, test);
-        ImageView image = this.findViewById(R.id.pattern_picture);
-        image.setImageBitmap(test);
 
         System.out.println("Amount of good matches:" + listOfGoodMatches.size());
         //TextView template = this.findViewById(R.id.textView);

@@ -1,7 +1,10 @@
 package com.example.neutronas;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
+import android.view.View;
 
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;

@@ -1,5 +1,6 @@
 package com.example.neutronas;
 
+import android.app.DialogFragment;
 import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,11 +15,11 @@ import android.widget.Button;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Gallery extends AppCompatActivity {
+public class Gallery extends AppCompatActivity{
 
     Button backButton;
     RecyclerView recyclerView;
-    RecyclerView.Adapter adapter;
+    NoteAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,7 @@ public class Gallery extends AppCompatActivity {
 //
 //        }
 
-        AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "note")
+        final AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "note")
                 .allowMainThreadQueries()
                 .build();
 
@@ -56,6 +57,16 @@ public class Gallery extends AppCompatActivity {
 
         recyclerView.setAdapter(adapter);
 
+        adapter.setOnDeleteClickListener(new NoteAdapter.OnDeleteClickListener() {
+            @Override
+            public void onDeleteClick(int position) {
+                Note clickedNote = db.noteDao().getDatalById(position);
+                String noteName = clickedNote.getNoteName();
+                Note_delete_dialog newFragment = Note_delete_dialog.newInstance(noteName,position);
+                newFragment.show(getSupportFragmentManager(), "dialog");
+            }
+        });
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,4 +75,11 @@ public class Gallery extends AppCompatActivity {
             }
         });
     }
+
+    public void showPrompt()
+    {
+        Note_delete_dialog note_delete_dialog = new Note_delete_dialog();
+        note_delete_dialog.show(getSupportFragmentManager(),"Tag");
+    }
+
 }

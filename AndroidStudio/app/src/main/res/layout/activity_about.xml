@@ -23,20 +23,18 @@
         android:id="@+id/top_bar_text"
         android:layout_width="400dp"
         android:layout_height="50dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+
+        android:layout_marginTop="24dp"
         android:fontFamily="sans-serif-thin"
-        android:text="About / Testing Area"
+        android:text="About"
         android:textAlignment="center"
         android:textSize="36dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.394"
-        app:layout_constraintStart_toEndOf="@+id/back_button_about"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.024" />
+        app:layout_constraintHorizontal_bias="0.454"
+
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!--BackButton-->
     <Button
@@ -56,19 +54,48 @@
         app:layout_constraintTop_toTopOf="@+id/topBar"
         app:layout_constraintVertical_bias="0.029" />
 
+    <!--<MultiAutoCompleteTextView-->
+        <!--android:id="@+id/multiAutoCompleteTextView"-->
+        <!--android:layout_width="387dp"-->
+        <!--android:layout_height="422dp"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="8dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:layout_marginBottom="8dp"-->
+        <!--android:text="This application is designed to associate a symbol with some sort of note. Let us say that you will not remember what you placed inside a storage. Before placing anything, draw a distinct symbol and take a picture of it using the application. When you will decide that you want to check what did you place inside, just take a symbol using the applications scanning function and voila! All the notes you wrote about this symbol will be now shown! (well at least it should.. in theory..)"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintHorizontal_bias="0.0"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/topBar"-->
+        <!--app:layout_constraintVertical_bias="0.0" />-->
+
     <TextView
-        android:id="@+id/textViewAbout"
-        android:layout_width="377dp"
-        android:layout_height="318dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/abouttextbox"
+
+        android:text="This application is designed to associate a symbol with some sort of note.\n\nLet us say that you will not remember what you placed inside a storage.\nBefore placing anything,
+         draw a distinct symbol and take a picture of it using the application.\n\nWhen you will decide that you want to check what did you place inside, just take a symbol using the applications scanning function and voila!\n\nAll the notes you wrote about this symbol will be now shown! (well at least it should.. in theory..)"
+        android:textSize="20sp"
+
+        app:layout_constraintTop_toBottomOf="@id/topBar"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topBar" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+
+        android:paddingTop="20dp"
+        android:paddingStart="30dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="10dp"
+        />
+
+
 
     <!--TextBox-->
 

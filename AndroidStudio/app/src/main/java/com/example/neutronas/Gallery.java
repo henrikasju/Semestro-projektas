@@ -67,6 +67,18 @@ public class Gallery extends AppCompatActivity{
             }
         });
 
+        adapter.setOnEditClickListener(new NoteAdapter.OnEditClickListener() {
+            @Override
+            public void onEditClick(int position) {
+                Intent goToFillNote = new Intent(Gallery.this, NoteFill.class);
+                Bundle transfer = new Bundle();
+                transfer.putInt("noteId", position);
+                goToFillNote.putExtras(transfer);
+                startActivity(goToFillNote);
+                finish();
+            }
+        });
+
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

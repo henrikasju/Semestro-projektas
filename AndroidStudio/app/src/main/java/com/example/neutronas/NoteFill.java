@@ -37,48 +37,87 @@ public class NoteFill extends AppCompatActivity {
         dateText = (EditText) findViewById(R.id.dateText);
         noteNameText = (EditText) findViewById(R.id.noteNameText);
         noteDescriptionText = (EditText) findViewById(R.id.noteDescriptionText);
-
-
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentLoadNewActivity = new Intent(NoteFill.this, Camera.class);
-                startActivity(intentLoadNewActivity);
-            }
-        });
+        symbolView = findViewById(R.id.symbol_circle);
 
         Bundle transfer = getIntent().getExtras();
-        if (transfer != null)
-            imagePath = transfer.getString("filePath");
 
-        symbolView = findViewById(R.id.symbol_circle);
-        if (imagePath != null) {
-            System.out.println("Photo path : " + imagePath);
-            //setPic(imagePath);
-        }
+        final AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "note")
+                .allowMainThreadQueries()
+                .build();
 
-        String date = imagePath.substring(imagePath.indexOf("JPEG_") + 5,imagePath.indexOf("JPEG_") + 8 + 5);
-        date = date.substring(0,4) + "-" + date.substring(4,6) + "-" + date.substring(6,8);
+        if (transfer != null && getIntent().hasExtra("noteId"))
+        {
+            final int noteId = transfer.getInt("noteId");
+
+            Note note = db.noteDao().getDatalById(noteId);
+
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intentLoadNewActivity = new Intent(NoteFill.this, Gallery.class);
+                    startActivity(intentLoadNewActivity);
+                }
+            });
+
+            imagePath = note.getNotePhotoPath();
+
+            String date = imagePath.substring(imagePath.indexOf("JPEG_") + 5, imagePath.indexOf("JPEG_") + 8 + 5);
+            date = date.substring(0, 4) + "-" + date.substring(4, 6) + "-" + date.substring(6, 8);
+            dateText.setText(date);
+            dateText.setEnabled(false);
+
+            noteNameText.setText(note.getNoteName());
+            noteDescriptionText.setText(note.getNoteDescription());
+
+            saveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    db.noteDao().updateByNoteId(noteId, noteNameText.getText().toString(), noteDescriptionText.getText().toString());
+                    startActivity(new Intent(NoteFill.this, Gallery.class));
+                }
+            });
 
 
-        dateText.setText(date);
-        dateText.setEnabled(false);
 
 
+        }else {
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // TODO: 2019-05-11 Save to database
-                AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "note")
-                        .allowMainThreadQueries()
-                        .build();
+            backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intentLoadNewActivity = new Intent(NoteFill.this, Camera.class);
+                    startActivity(intentLoadNewActivity);
+                }
+            });
 
-                Note note = new Note(imagePath, dateText.getText().toString(), noteNameText.getText().toString(), noteDescriptionText.getText().toString());
-                db.noteDao().insertAll(note);
-                startActivity(new Intent(NoteFill.this, Gallery.class));
+            //Bundle transfer = getIntent().getExtras();
+            if (transfer != null)
+                imagePath = transfer.getString("filePath");
+
+            if (imagePath != null) {
+                System.out.println("Photo path : " + imagePath);
+                //setPic(imagePath);
             }
-        });
+
+            String date = imagePath.substring(imagePath.indexOf("JPEG_") + 5, imagePath.indexOf("JPEG_") + 8 + 5);
+            date = date.substring(0, 4) + "-" + date.substring(4, 6) + "-" + date.substring(6, 8);
+
+
+            dateText.setText(date);
+            dateText.setEnabled(false);
+
+
+            saveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    Note note = new Note(imagePath, dateText.getText().toString(), noteNameText.getText().toString(), noteDescriptionText.getText().toString());
+                    db.noteDao().insertAll(note);
+                    startActivity(new Intent(NoteFill.this, Gallery.class));
+                }
+            });
+
+        }
     }
 
     public void onWindowFocusChanged(boolean hasFocus)

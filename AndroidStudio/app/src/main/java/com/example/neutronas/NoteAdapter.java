@@ -32,14 +32,24 @@ class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder>{
     List<Note> notes;
     ArrayList<Bitmap> photos;
     public OnDeleteClickListener dListener;
+    public OnEditClickListener eListener;
 
     public interface OnDeleteClickListener{
         void onDeleteClick(int position);
     }
 
+    public interface OnEditClickListener{
+        void onEditClick(int position);
+    }
+
     public void setOnDeleteClickListener(OnDeleteClickListener listener)
     {
         dListener = listener;
+    }
+
+    public void setOnEditClickListener(OnEditClickListener listener)
+    {
+        eListener = listener;
     }
 
 
@@ -59,7 +69,7 @@ class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder>{
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         holder.note_name.setText(notes.get(position).getNoteName());
         holder.note_date.setText(notes.get(position).getNoteDate());
         holder.note_description.setText(notes.get(position).getNoteDescription());
@@ -74,9 +84,19 @@ class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder>{
             public void onClick(View view) {
                 if (dListener != null)
                 {
-                    dListener.onDeleteClick(position+1);
+                    dListener.onDeleteClick(notes.get(position).getId());
                 }
 
+            }
+        });
+
+        holder.note_edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (eListener != null)
+                {
+                    eListener.onEditClick(notes.get(position).getId());
+                }
             }
         });
 
@@ -93,6 +113,7 @@ class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder>{
         public TextView note_description;
         public ImageView note_image;
         public ImageButton note_delete;
+        public ImageButton note_edit;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -101,6 +122,7 @@ class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder>{
             note_description = itemView.findViewById(R.id.note_description);
             note_image = itemView.findViewById(R.id.note_image_preview);
             note_delete = itemView.findViewById(R.id.delete_button);
+            note_edit = itemView.findViewById(R.id.edit_button);
         }
     }
 

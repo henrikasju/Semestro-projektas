@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentLoadNewActivity = new Intent(MainActivity.this, Scan.class);
+                Intent intentLoadNewActivity = new Intent(MainActivity.this, PatternCamera.class);
                 startActivity(intentLoadNewActivity);
             }
         });

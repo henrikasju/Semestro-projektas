@@ -24,14 +24,5 @@ public class About extends AppCompatActivity {
                 startActivity(intentLoadNewActivity);
             }
         });
-
-        Button startButton = findViewById(R.id.pattern_camera_button);
-        startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent cvIntent = new Intent(About.this, PatternCamera.class);
-                startActivity(cvIntent);
-            }
-        });
     }
 }

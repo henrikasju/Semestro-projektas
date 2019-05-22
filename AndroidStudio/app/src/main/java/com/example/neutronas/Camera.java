@@ -41,14 +41,14 @@ public class Camera extends AppCompatActivity {
                 startActivity(intentLoadNewActivity);
             }
         });
-
-        final Button captureButton  = findViewById(R.id.camera_button);
-        captureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dispatchTakePictureIntent();
-            }
-        });
+        dispatchTakePictureIntent();
+//        final Button captureButton  = findViewById(R.id.camera_button);
+//        captureButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dispatchTakePictureIntent();
+//            }
+//        });
     }
 
     static final int REQUEST_IMAGE_CAPTURE = 1;

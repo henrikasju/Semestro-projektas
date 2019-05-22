@@ -56,36 +56,23 @@
         app:layout_constraintTop_toTopOf="@+id/topBar"
         app:layout_constraintVertical_bias="0.029" />
 
-    <!--TextBox-->
-    <ImageView
-        android:id="@+id/whiteBox"
-        android:layout_width="340dp"
-        android:layout_height="300dp"
+    <MultiAutoCompleteTextView
+        android:id="@+id/multiAutoCompleteTextView"
+        android:layout_width="387dp"
+        android:layout_height="422dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/textbox"
+        android:text="This application is designed to associate a symbol with some sort of note. Let us say that you will not remember what you placed inside a storage. Before placing anything, draw a distinct symbol and take a picture of it using the application. When you will decide that you want to check what did you place inside, just take a symbol using the applications scanning function and voila! All the notes you wrote about this symbol will be now shown! (well at least it should.. in theory..)"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/topBar" />
+        app:layout_constraintTop_toBottomOf="@+id/topBar"
+        app:layout_constraintVertical_bias="0.0" />
 
-    <Button
-        android:id="@+id/pattern_camera_button"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:paddingStart="20dp"
-        android:paddingLeft="20dp"
-        android:paddingEnd="20dp"
-        android:paddingRight="20dp"
-        android:text="Pattern Camera"
-        app:layout_constraintBottom_toBottomOf="@+id/whiteBox"
-        app:layout_constraintEnd_toEndOf="@+id/whiteBox"
-        app:layout_constraintStart_toStartOf="@+id/whiteBox"
-        app:layout_constraintTop_toTopOf="@+id/whiteBox" />
+    <!--TextBox-->
 
 
 </android.support.constraint.ConstraintLayout>

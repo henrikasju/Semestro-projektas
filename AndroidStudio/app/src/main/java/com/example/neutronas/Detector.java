@@ -1,16 +1,18 @@
 package com.example.neutronas;
 
 import android.arch.persistence.room.Room;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 import org.opencv.android.Utils;
 import org.opencv.calib3d.Calib3d;
@@ -38,18 +40,33 @@ import static com.example.neutronas.PatternCamera.currentPhotoPath;
 
 public class Detector extends AppCompatActivity {
 
-    private static AKAZE detector = MainActivity.detector;
+    private static AKAZE akaze = MainActivity.detector;
     private String bestMatchPath = "nomatch";
     private int maxKeypoints = -1;
     private int foundBetter = 0;
+    private int noteId = -1;
     private Mat matchOutput = new Mat(), output = new Mat();
-    private String outFile = Environment.getExternalStorageDirectory() + "/matched.jpg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detector);
-        TextView textView = this.findViewById(R.id.textView);
+
+        Button backButton = findViewById(R.id.back_button_note);
+        TextView dateText = findViewById(R.id.dateText);
+        TextView noteNameText = findViewById(R.id.noteNameText);
+        TextView noteDescriptionText = findViewById(R.id.noteDescriptionText);
+        CircularImageView templateImg = findViewById(R.id.symbol_circle);
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intentLoadNewActivity = new Intent(Detector.this, MainActivity.class);
+                startActivity(intentLoadNewActivity);
+            }
+        });
+
+        //TextView textView = this.findViewById(R.id.textView);
         // Load the database
         AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "note")
                 .allowMainThreadQueries()
@@ -68,39 +85,53 @@ public class Detector extends AppCompatActivity {
                 if (foundBetter < maxKeypoints) {
                     foundBetter = maxKeypoints;
                     matchOutput = output;
+                    noteId = i;
                 }
             }
         }
         if (maxKeypoints == -1 || bestMatchPath == "nomatch" || matchOutput == null) {
             Toast.makeText(Detector.this, "Match not found. Try taking a better picture.", Toast.LENGTH_LONG).show();
             System.out.println("Match not found!");
+            String text = "\nMatch not found!";
+            dateText.setVisibility(View.INVISIBLE);
+            noteNameText.setText(text);
+            noteDescriptionText.setVisibility(View.INVISIBLE);
+            templateImg.setVisibility(View.INVISIBLE);
         }
         // If matched
         else {
-            ImageView matched = this.findViewById(R.id.display_keypoints);
-            Bitmap matchedBitmap = Bitmap.createBitmap(matchOutput.cols(), matchOutput.rows(), Bitmap.Config.ARGB_8888);
+            //ImageView matched = this.findViewById(R.id.display_keypoints);
+            //Bitmap matchedBitmap = Bitmap.createBitmap(matchOutput.cols(), matchOutput.rows(), Bitmap.Config.ARGB_8888);
 
             // Convert matrix to bitmap
-            Utils.matToBitmap(matchOutput, matchedBitmap);
+            //Utils.matToBitmap(matchOutput, matchedBitmap);
 
             // Show matched image in app
-            matched.setImageBitmap(matchedBitmap);
+            //matched.setImageBitmap(matchedBitmap);
 
             // Print out AKAZE information
-            Imgcodecs.imwrite(outFile, matchOutput);
+            //Imgcodecs.imwrite(outFile, matchOutput);
 
-            String text = "<font color=#00ee59>\nIt's A MATCH!<br></font>";
+            /*String text = "<font color=#00ee59>\nIt's A MATCH!<br></font>";
             textView.setText(Html.fromHtml(text));
-            System.out.println("Match successful!");
+            System.out.println("Match successful!");*/
 
             // Showing scene image in a second imageView (blackbackground bug in matched image)
-            Bitmap test = BitmapFactory.decodeFile(bestMatchPath);
+            /*Bitmap test = BitmapFactory.decodeFile(bestMatchPath);
             ImageView image = this.findViewById(R.id.pattern_picture);
-            image.setImageBitmap(test);
+            image.setImageBitmap(test);*/
+
+            // Get the matched image id
+            Note note = notes.get(noteId);
+
+            // Add the matched notes information to note preview activity
+            dateText.setText(note.getNoteDate());
+            noteNameText.setText(note.getNoteName());
+            noteDescriptionText.setText(note.getNoteDescription());
+            templateImg.setImageBitmap(setPic(bestMatchPath, 400, 400));
         }
     }
 
-    // Currently useless method
     private Bitmap setPic(String path, int width, int height) {
         // Get the dimensions of the View
         int targetW = width; // 600
@@ -127,12 +158,12 @@ public class Detector extends AppCompatActivity {
     public Mat run(File sceneFile, File templateFile) {
         // Resize captured picture to not overload memory (setPic())
         Mat scene = new Mat();
-        Utils.bitmapToMat(setPic(sceneFile.getAbsolutePath(), 300, 168), scene);
+        Utils.bitmapToMat(setPic(sceneFile.getAbsolutePath(), 400, 225), scene);
         Mat pattern = Imgcodecs.imread(templateFile.getAbsolutePath(), Imgcodecs.IMREAD_GRAYSCALE);
         Mat matchOutput = new Mat();
 
         // Use AKAZE method for picture and pattern matching
-        AKAZE akaze = AKAZE.create();
+        //AKAZE akaze = AKAZE.create();
         MatOfKeyPoint patternKeypts = new MatOfKeyPoint(), sceneKeypts = new MatOfKeyPoint();
         Mat patternDescriptors = new Mat(), sceneDescriptors = new Mat();
 
@@ -248,5 +279,4 @@ public class Detector extends AppCompatActivity {
         System.out.println("# Inliers Ratio:                      \t" + inlierRatio);
         return matchOutput;
     }
-    // TODO: Show matched image notes
 }

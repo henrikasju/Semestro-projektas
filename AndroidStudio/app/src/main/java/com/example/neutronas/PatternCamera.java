@@ -225,14 +225,9 @@ public class PatternCamera extends AppCompatActivity {
                 @Override
                 public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
-                    Toast.makeText(PatternCamera.this, "Saved:" + file, Toast.LENGTH_SHORT).show();
                     picFile = file;
                     closeCamera();
                     requestCrop();
-                    //Uri uri = Uri.fromFile(file);
-                    //picUri = uri;
-                    //performCrop();
-                    //createCameraPreview();
                 }
             };
             cameraDevice.createCaptureSession(outputSurfaces, new CameraCaptureSession.StateCallback() {

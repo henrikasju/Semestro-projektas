@@ -119,13 +119,9 @@ public class Camera extends AppCompatActivity {
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
-
-
-
-
-
-
-
-
-
+    @Override
+    public void onBackPressed() {
+        Intent intentLoadNewActivity = new Intent(Camera.this, MainActivity.class);
+        startActivity(intentLoadNewActivity);
+    }
 }

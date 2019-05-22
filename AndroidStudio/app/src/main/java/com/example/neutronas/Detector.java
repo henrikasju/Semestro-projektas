@@ -66,7 +66,6 @@ public class Detector extends AppCompatActivity {
             }
         });
 
-        //TextView textView = this.findViewById(R.id.textView);
         // Load the database
         AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "note")
                 .allowMainThreadQueries()
@@ -100,27 +99,6 @@ public class Detector extends AppCompatActivity {
         }
         // If matched
         else {
-            //ImageView matched = this.findViewById(R.id.display_keypoints);
-            //Bitmap matchedBitmap = Bitmap.createBitmap(matchOutput.cols(), matchOutput.rows(), Bitmap.Config.ARGB_8888);
-
-            // Convert matrix to bitmap
-            //Utils.matToBitmap(matchOutput, matchedBitmap);
-
-            // Show matched image in app
-            //matched.setImageBitmap(matchedBitmap);
-
-            // Print out AKAZE information
-            //Imgcodecs.imwrite(outFile, matchOutput);
-
-            /*String text = "<font color=#00ee59>\nIt's A MATCH!<br></font>";
-            textView.setText(Html.fromHtml(text));
-            System.out.println("Match successful!");*/
-
-            // Showing scene image in a second imageView (blackbackground bug in matched image)
-            /*Bitmap test = BitmapFactory.decodeFile(bestMatchPath);
-            ImageView image = this.findViewById(R.id.pattern_picture);
-            image.setImageBitmap(test);*/
-
             // Get the matched image id
             Note note = notes.get(noteId);
 
@@ -270,13 +248,13 @@ public class Detector extends AppCompatActivity {
         }
 
         // Print picture information after each cycle
-        System.out.println("A-KAZE Matching Results");
-        System.out.println("*******************************");
-        System.out.println("# Keypoints 1:                        \t" + listOfKeypoints1.size());
-        System.out.println("# Keypoints 2:                        \t" + listOfKeypoints2.size());
-        System.out.println("# Matches:                            \t" + listOfMatched1.size());
-        System.out.println("# Inliers:                            \t" + listOfInliers1.size());
-        System.out.println("# Inliers Ratio:                      \t" + inlierRatio);
+//        System.out.println("A-KAZE Matching Results");
+//        System.out.println("*******************************");
+//        System.out.println("# Keypoints 1:                        \t" + listOfKeypoints1.size());
+//        System.out.println("# Keypoints 2:                        \t" + listOfKeypoints2.size());
+//        System.out.println("# Matches:                            \t" + listOfMatched1.size());
+//        System.out.println("# Inliers:                            \t" + listOfInliers1.size());
+//        System.out.println("# Inliers Ratio:                      \t" + inlierRatio);
         return matchOutput;
     }
 }

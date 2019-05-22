@@ -28,6 +28,7 @@ import android.os.HandlerThread;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Size;
@@ -89,6 +90,10 @@ public class PatternCamera extends AppCompatActivity {
         textureView.setSurfaceTextureListener(textureListener);
         takePictureButton = findViewById(R.id.shutter_button);
         assert takePictureButton != null;
+        if (!Environment.getExternalStorageDirectory().exists()) {
+            File file = new File(Constants.SCAN_IMAGE_LOCATION);
+            file.mkdir();
+        }
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -318,7 +323,7 @@ public class PatternCamera extends AppCompatActivity {
     }
     private void requestCrop() {
         //currentPhotoPath = picFile.getAbsolutePath();
-        Uri uri = Uri.fromFile(picFile);
+        Uri uri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", picFile);
         picUri = uri;
         performCrop();
     }
@@ -326,6 +331,7 @@ public class PatternCamera extends AppCompatActivity {
         try {
             // Call the standard crop action intent (the user device may not support it)
             Intent cropIntent = new Intent("com.android.camera.action.CROP");
+            cropIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             // Indicate image type and Uri
             cropIntent.setDataAndType(picUri, "image/*");
             // Set crop properties
@@ -405,5 +411,11 @@ public class PatternCamera extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intentLoadNewActivity = new Intent(PatternCamera.this, MainActivity.class);
+        startActivity(intentLoadNewActivity);
     }
 }

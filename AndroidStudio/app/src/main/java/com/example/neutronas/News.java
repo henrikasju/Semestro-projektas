@@ -24,4 +24,10 @@ public class News extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intentLoadNewActivity = new Intent(News.this, MainActivity.class);
+        startActivity(intentLoadNewActivity);
+    }
 }

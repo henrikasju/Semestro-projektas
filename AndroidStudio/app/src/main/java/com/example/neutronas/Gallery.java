@@ -94,4 +94,9 @@ public class Gallery extends AppCompatActivity{
         note_delete_dialog.show(getSupportFragmentManager(),"Tag");
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intentLoadNewActivity = new Intent(Gallery.this, MainActivity.class);
+        startActivity(intentLoadNewActivity);
+    }
 }

@@ -48,7 +48,7 @@ public class Gallery extends AppCompatActivity{
         for (int i = 0; i < notes.size(); i++) {
             Bitmap bitmap = BitmapFactory.decodeFile(notes.get(i).getNotePhotoPath());
 
-            Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 500,500, true);
+            Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 200,200, true);
             photos.add(scaled);
         }
 

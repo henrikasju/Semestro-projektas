@@ -81,6 +81,7 @@ public class PatternCamera extends AppCompatActivity {
     private boolean mFlashSupported;
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
+    private File extPathFile = new File(Constants.SCAN_IMAGE_LOCATION);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,9 +91,8 @@ public class PatternCamera extends AppCompatActivity {
         textureView.setSurfaceTextureListener(textureListener);
         takePictureButton = findViewById(R.id.shutter_button);
         assert takePictureButton != null;
-        if (!Environment.getExternalStorageDirectory().exists()) {
-            File file = new File(Constants.SCAN_IMAGE_LOCATION);
-            file.mkdir();
+        if (!extPathFile.exists()) {
+            extPathFile.mkdir();
         }
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,8 +175,8 @@ public class PatternCamera extends AppCompatActivity {
             int width = 640;
             int height = 480;
             if (jpegSizes != null && 0 < jpegSizes.length) {
-                width = jpegSizes[0].getWidth();
-                height = jpegSizes[0].getHeight();
+                width = jpegSizes[0].getWidth(); // 1280
+                height = jpegSizes[0].getHeight(); // 960
             }
             ImageReader reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
             List<Surface> outputSurfaces = new ArrayList<Surface>(2);
@@ -188,10 +188,6 @@ public class PatternCamera extends AppCompatActivity {
             // Orientation
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
-            if (!Environment.getExternalStorageDirectory().exists()) {
-                File file = new File(Constants.SCAN_IMAGE_LOCATION);
-                file.mkdir();
-            }
             final File file = new File(Constants.SCAN_IMAGE_LOCATION + File.separator + Utilities.generateFilename());
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override

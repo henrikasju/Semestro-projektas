@@ -1,26 +1,19 @@
 package com.example.neutronas;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import static android.os.Environment.getExternalStoragePublicDirectory;
 
 public class Camera extends AppCompatActivity {
 
@@ -88,7 +81,7 @@ public class Camera extends AppCompatActivity {
             goToFillNote.putExtras(transfer);
             startActivity(goToFillNote);
             finish();
-        }else{
+        } else {
             File file = new File(currentPhotoPath);
             long length = file.length();
             if (length == 0) {
@@ -119,6 +112,7 @@ public class Camera extends AppCompatActivity {
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
+
     @Override
     public void onBackPressed() {
         Intent intentLoadNewActivity = new Intent(Camera.this, MainActivity.class);

@@ -6,6 +6,9 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -28,32 +31,31 @@
         android:roundIcon="@drawable/applogo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Test" />
         <activity
-            android:name=".NoteFill"
+            android:name="com.example.neutronas.NoteFill"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".About"
+            android:name="com.example.neutronas.About"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".News"
+            android:name="com.example.neutronas.News"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Gallery"
+            android:name="com.example.neutronas.Gallery"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Camera"
+            android:name="com.example.neutronas.Camera"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
-        <activity android:name=".Scan" />
-        <activity android:name=".PatternCamera" />
-        <activity android:name=".Detector" />
+        <activity android:name="com.example.neutronas.Scan" />
+        <activity android:name="com.example.neutronas.PatternCamera" />
+        <activity android:name="com.example.neutronas.Detector" />
         <activity
-            android:name=".SplashActivity"
+            android:name="com.example.neutronas.SplashActivity"
             android:label="@string/app_name"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -62,20 +64,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"
+        <activity
+            android:name="com.example.neutronas.MainActivity"
             android:configChanges="orientation"
-            android:screenOrientation="portrait" />
-        <!--<activity-->
-            <!--android:name=".MainActivity"-->
-            <!--android:configChanges="orientation"-->
-            <!--android:screenOrientation="portrait">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
-
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
-        <!--</activity>-->
-
+            android:screenOrientation="portrait" /> <!-- <activity -->
+        <!-- android:name=".MainActivity" -->
+        <!-- android:configChanges="orientation" -->
+        <!-- android:screenOrientation="portrait"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" /> -->
+        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+        <!-- </intent-filter> -->
+        <!-- </activity> -->
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.example.android.fileprovider"

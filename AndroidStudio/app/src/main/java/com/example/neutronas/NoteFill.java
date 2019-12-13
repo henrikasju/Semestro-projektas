@@ -4,21 +4,30 @@ import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import com.mikhaellopez.circularimageview.CircularImageView;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class NoteFill extends AppCompatActivity {
 
     Button backButton;
     ImageButton saveButton;
+    ImageButton shareButton;
     //ImageView symbolView;
     String imagePath = null;
     CircularImageView symbolView;
@@ -34,6 +43,7 @@ public class NoteFill extends AppCompatActivity {
 
         backButton = (Button) findViewById(R.id.back_button_note);
         saveButton = (ImageButton) findViewById(R.id.save_button);
+        shareButton = (ImageButton) findViewById(R.id.share_button);
         dateText = (EditText) findViewById(R.id.dateText);
         noteNameText = (EditText) findViewById(R.id.noteNameText);
         noteDescriptionText = (EditText) findViewById(R.id.noteDescriptionText);
@@ -77,10 +87,23 @@ public class NoteFill extends AppCompatActivity {
                 }
             });
 
+            shareButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Drawable mDrawable = symbolView.getDrawable();
+                    Bitmap mBitmap = ((BitmapDrawable) mDrawable).getBitmap();
 
+                    String path = MediaStore.Images.Media.insertImage(getContentResolver(), mBitmap, "Image Description", null);
+                    Uri uri = Uri.parse(path);
 
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("image/jpeg");
+                    intent.putExtra(Intent.EXTRA_STREAM, uri);
+                    startActivity(Intent.createChooser(intent, "Share Image"));
+                }
+            });
 
-        }else {
+        } else {
 
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -110,13 +133,27 @@ public class NoteFill extends AppCompatActivity {
             saveButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     Note note = new Note(imagePath, dateText.getText().toString(), noteNameText.getText().toString(), noteDescriptionText.getText().toString());
                     db.noteDao().insertAll(note);
                     startActivity(new Intent(NoteFill.this, Gallery.class));
                 }
             });
 
+            shareButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Drawable mDrawable = symbolView.getDrawable();
+                    Bitmap mBitmap = ((BitmapDrawable) mDrawable).getBitmap();
+
+                    String path = MediaStore.Images.Media.insertImage(getContentResolver(), mBitmap, "Image Description", null);
+                    Uri uri = Uri.parse(path);
+
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.setType("image/jpeg");
+                    intent.putExtra(Intent.EXTRA_STREAM, uri);
+                    startActivity(Intent.createChooser(intent, "Share Image"));
+                }
+            });
         }
     }
 

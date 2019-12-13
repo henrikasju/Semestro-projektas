@@ -44,13 +44,20 @@
 
             <ImageButton
                 android:id="@+id/save_button"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="30dp"
                 android:layout_weight="1"
                 android:background="@drawable/savelogo" />
 
 
+            <ImageButton
+                android:id="@+id/share_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="30dp"
+                android:layout_weight="1"
+                android:background="@drawable/share_icon" />
         </LinearLayout>
 
 

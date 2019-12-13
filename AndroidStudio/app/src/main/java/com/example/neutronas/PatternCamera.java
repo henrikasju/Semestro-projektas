@@ -1,6 +1,7 @@
 package com.example.neutronas;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
+import android.graphics.Matrix;
+import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -18,6 +21,7 @@ import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.ExifInterface;
 import android.media.Image;
 import android.media.ImageReader;
 import android.net.Uri;
@@ -44,20 +48,26 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class PatternCamera extends AppCompatActivity {
 
     final int PIC_CROP = 3;
-    public static String currentPhotoPath;
+    final int REQUEST_IMAGE_CAPTURE = 1;
+
+    private String currentPhotoPath;
+    public static String patternPhotoPath;
     private static final String TAG = "ObjectRecognition";
     private ImageView takePictureButton;
     private TextureView textureView;
@@ -71,17 +81,17 @@ public class PatternCamera extends AppCompatActivity {
     private String cameraId;
     protected CameraDevice cameraDevice;
     protected CameraCaptureSession cameraCaptureSessions;
-    protected CaptureRequest captureRequest;
     protected CaptureRequest.Builder captureRequestBuilder;
     private Size imageDimension;
     private ImageReader imageReader;
     private File picFile;
     private Uri picUri;
     private static final int REQUEST_CAMERA_PERMISSION = 200;
-    private boolean mFlashSupported;
+    private static int ACTION = -1;
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
     private File extPathFile = new File(Constants.SCAN_IMAGE_LOCATION);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,12 +104,29 @@ public class PatternCamera extends AppCompatActivity {
         if (!extPathFile.exists()) {
             extPathFile.mkdir();
         }
-        takePictureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                takePicture();
-            }
-        });
+
+        Bundle b = getIntent().getExtras();
+        int value = -1; // or other values
+        if(b != null)
+            value = b.getInt("action");
+        if (value == Constants.TAKE_GALLERY_PICTURE) {
+            takePictureButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ACTION = Constants.TAKE_GALLERY_PICTURE;
+                    takePicture();
+                }
+            });
+        }
+        if (value == Constants.TAKE_PATTERN_PICTURE) {
+            takePictureButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ACTION = Constants.TAKE_PATTERN_PICTURE;
+                    takePicture();
+                }
+            });
+        }
     }
     TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
         @Override
@@ -178,6 +205,10 @@ public class PatternCamera extends AppCompatActivity {
                 width = jpegSizes[0].getWidth(); // 1280
                 height = jpegSizes[0].getHeight(); // 960
             }
+            if (ACTION == Constants.TAKE_GALLERY_PICTURE) {
+                width = 1920;
+                height = 1080;
+            }
             ImageReader reader = ImageReader.newInstance(width, height, ImageFormat.JPEG, 1);
             List<Surface> outputSurfaces = new ArrayList<Surface>(2);
             outputSurfaces.add(reader.getSurface());
@@ -186,9 +217,14 @@ public class PatternCamera extends AppCompatActivity {
             captureBuilder.addTarget(reader.getSurface());
             captureBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
             // Orientation
-            int rotation = getWindowManager().getDefaultDisplay().getRotation();
-            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
-            final File file = new File(Constants.SCAN_IMAGE_LOCATION + File.separator + Utilities.generateFilename());
+            //int rotation = getWindowManager().getDefaultDisplay().getRotation();
+            //captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
+            CameraCharacteristics cameraCharacteristics = manager.getCameraCharacteristics("" + cameraDevice.getId());
+            final int rotation = cameraCharacteristics.get(CameraCharacteristics.SENSOR_ORIENTATION);
+            captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, rotation);
+
+            //final File file = new File(Constants.SCAN_IMAGE_LOCATION + File.separator + Utilities.generateFilename());
+            final File file = createImageFile();
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader reader) {
@@ -226,9 +262,36 @@ public class PatternCamera extends AppCompatActivity {
                 @Override
                 public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
                     super.onCaptureCompleted(session, request, result);
-                    picFile = file;
-                    closeCamera();
-                    requestCrop();
+                    rotateImage(file, rotation);
+                    if (ACTION == Constants.TAKE_PATTERN_PICTURE) {
+                        picFile = file;
+                        closeCamera();
+                        requestCrop();
+                    }
+                    if (ACTION == Constants.TAKE_GALLERY_PICTURE) {
+                        Uri photoURI = FileProvider.getUriForFile(PatternCamera.this, "com.example.android.fileprovider", file);
+                        String picturePath = file.getAbsolutePath();
+                        if (photoURI != null) {
+                            Intent goToFillNote = new Intent(PatternCamera.this, NoteFill.class);
+                            Bundle transfer = new Bundle();
+                            transfer.putString("filePath", picturePath);
+                            goToFillNote.putExtras(transfer);
+                            startActivity(goToFillNote);
+                            closeCamera();
+                            finish();
+                        } else {
+                            File file = new File(picturePath);
+                            long length = file.length();
+                            if (length == 0) {
+                                if (file.delete())
+                                {
+                                    closeCamera();
+                                    Toast.makeText(PatternCamera.this, "Picture was not captured", Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+                        }
+                    }
                 }
             };
             cameraDevice.createCaptureSession(outputSurfaces, new CameraCaptureSession.StateCallback() {
@@ -318,7 +381,7 @@ public class PatternCamera extends AppCompatActivity {
         }
     }
     private void requestCrop() {
-        //currentPhotoPath = picFile.getAbsolutePath();
+        //patternPhotoPath = picFile.getAbsolutePath();
         Uri uri = FileProvider.getUriForFile(this, "com.example.android.fileprovider", picFile);
         picUri = uri;
         performCrop();
@@ -394,12 +457,14 @@ public class PatternCamera extends AppCompatActivity {
         if(requestCode == PIC_CROP) {
             closeCamera();
             String filePath = Environment.getExternalStorageDirectory() + "/temporary_holder.jpg";
+            File fileToDelete = new File(filePath);
             try {
-                currentPhotoPath = picFile.getAbsolutePath();
+                patternPhotoPath = picFile.getAbsolutePath();
                 Bitmap bitmap = BitmapFactory.decodeFile(filePath);
                 Mat obj = new Mat(bitmap.getWidth(), bitmap.getHeight(), CvType.CV_8UC4);
                 Utils.bitmapToMat(bitmap, obj);
-                Imgcodecs.imwrite(currentPhotoPath, obj);
+                Imgcodecs.imwrite(patternPhotoPath, obj);
+                fileToDelete.delete();
                 Intent intent = new Intent(PatternCamera.this, Detector.class);
                 startActivity(intent);
             }
@@ -413,5 +478,45 @@ public class PatternCamera extends AppCompatActivity {
     public void onBackPressed() {
         Intent intentLoadNewActivity = new Intent(PatternCamera.this, MainActivity.class);
         startActivity(intentLoadNewActivity);
+    }
+
+    private File createImageFile() {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = null;
+        try {
+            image = File.createTempFile(imageFileName, ".jpg", storageDir );
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
+        return image;
+    }
+
+    private static void rotateImage(File file, int degree) {
+        String filePath = file.getPath();
+        Bitmap img = BitmapFactory.decodeFile(filePath);
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree);
+        Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
+        img.recycle();
+
+        File f = new File(filePath);
+
+        Bitmap bitmap = rotatedImg;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bos);
+        byte[] bitmapdata = bos.toByteArray();
+
+        //write the bytes in file
+        try {
+            FileOutputStream fos = new FileOutputStream(f);
+            fos.write(bitmapdata);
+            fos.flush();
+            fos.close();
+        } catch (Exception ex) {
+            System.out.println(ex);
+        }
     }
 }

@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -36,7 +35,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.example.neutronas.PatternCamera.currentPhotoPath;
+import static com.example.neutronas.PatternCamera.patternPhotoPath;
 
 public class Detector extends AppCompatActivity {
 
@@ -75,7 +74,7 @@ public class Detector extends AppCompatActivity {
         List<Note> notes = db.noteDao().getAllNotes();
 
         // Cropped template image from PatternCamera
-        File template = new File(currentPhotoPath);
+        File template = new File(patternPhotoPath);
         for (int i = 0; i < notes.size(); i++) {
             // Get path of the i-nth image in gallery
             File scene = new File(notes.get(i).getNotePhotoPath());

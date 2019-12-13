@@ -1,6 +1,5 @@
 package com.example.neutronas;
 
-import android.app.DialogFragment;
 import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -62,7 +61,7 @@ public class Gallery extends AppCompatActivity{
             public void onDeleteClick(int position) {
                 Note clickedNote = db.noteDao().getDatalById(position);
                 String noteName = clickedNote.getNoteName();
-                Note_delete_dialog newFragment = Note_delete_dialog.newInstance(noteName,position);
+                NoteDeleteDialog newFragment = NoteDeleteDialog.newInstance(noteName,position);
                 newFragment.show(getSupportFragmentManager(), "dialog");
             }
         });
@@ -90,7 +89,7 @@ public class Gallery extends AppCompatActivity{
 
     public void showPrompt()
     {
-        Note_delete_dialog note_delete_dialog = new Note_delete_dialog();
+        NoteDeleteDialog note_delete_dialog = new NoteDeleteDialog();
         note_delete_dialog.show(getSupportFragmentManager(),"Tag");
     }
 

@@ -45,6 +45,11 @@ captures/
 # Keystore files
 # Uncomment the following line if you do not want to check your keystore files in.
 #*.jks
+.idea
+/.idea/*
+/AndroidStudio/app/src/test
+/AndroidStudio/app/src/androidTest
+.gitignore
 
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild

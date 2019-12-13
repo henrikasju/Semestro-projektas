@@ -23,6 +23,4 @@ public interface NoteDao {
     @Query("Update note SET name = :noteName, description = :noteDescription WHERE id = :noteId")
     void updateByNoteId(int noteId, String noteName, String noteDescription);
 
-
-
 }

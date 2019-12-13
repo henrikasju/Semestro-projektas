@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             mLoaderCallback.onManagerConnected(LoaderCallbackInterface.SUCCESS);
         }
         Dexter.withActivity(this)
-                .withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA)
+                .withPermissions(Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.CAMERA, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.INTERNET, Manifest.permission.ACCESS_COARSE_LOCATION)
                 .withListener(new MultiplePermissionsListener() {
                     @Override
                     public void onPermissionsChecked(MultiplePermissionsReport report) {
@@ -65,15 +65,17 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .check();
 
-
-
         scanButton = (ImageButton) findViewById(R.id.scan_view);
 
         scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intentLoadNewActivity = new Intent(MainActivity.this, PatternCamera.class);
+                Bundle b = new Bundle();
+                b.putInt("action", Constants.TAKE_PATTERN_PICTURE);
+                intentLoadNewActivity.putExtras(b);
                 startActivity(intentLoadNewActivity);
+                finish();
             }
         });
 
@@ -82,8 +84,12 @@ public class MainActivity extends AppCompatActivity {
         cameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intentLoadNewActivity = new Intent(MainActivity.this, Camera.class);
+                Intent intentLoadNewActivity = new Intent(MainActivity.this, PatternCamera.class);
+                Bundle b = new Bundle();
+                b.putInt("action", Constants.TAKE_GALLERY_PICTURE);
+                intentLoadNewActivity.putExtras(b);
                 startActivity(intentLoadNewActivity);
+                finish();
             }
         });
 

@@ -6,8 +6,8 @@ public class ShowDialog extends AppCompatDialogFragment {
 
     public ShowDialog()
     {
-        NoteDeleteDialog note_delete_dialog = new NoteDeleteDialog();
-        note_delete_dialog.show(getFragmentManager(),"Note deletion");
+        NoteDeleteDialog noteDeleteDialog = new NoteDeleteDialog();
+        noteDeleteDialog.show(getFragmentManager(),"Note deletion");
     }
 
 }

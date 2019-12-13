@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Neutronas</string>
+    <string name="title_activity_lab_">Lab_Activity</string>
 </resources>

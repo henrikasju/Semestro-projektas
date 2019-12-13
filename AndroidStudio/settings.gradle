@@ -1,1 +1,1 @@
-include ':app', ':java', ':OpenCV', ':lib'
+include ':app', ':java', ':OpenCV', ':lib', ':opencvSDK'

@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,11 +16,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.mikhaellopez.circularimageview.CircularImageView;
-
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 
 public class NoteFill extends AppCompatActivity {
 
@@ -59,7 +53,7 @@ public class NoteFill extends AppCompatActivity {
         {
             final int noteId = transfer.getInt("noteId");
 
-            Note note = db.noteDao().getDatalById(noteId);
+            Note note = db.noteDao().getDataById(noteId);
 
             backButton.setOnClickListener(new View.OnClickListener() {
                 @Override

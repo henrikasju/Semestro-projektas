@@ -49,6 +49,10 @@ public class Note {
         this.noteDescription = noteDescription;
     }
 
+    public Note() {
+
+    }
+
     public int getId() {
         return id;
     }

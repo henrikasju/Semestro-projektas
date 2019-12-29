@@ -6,19 +6,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder>{
+class NoteAdapter extends RecyclerView.Adapter<BaseViewHolder> {
 
     List<Note> notes;
     ArrayList<Bitmap> photos;
     public OnDeleteClickListener dListener;
     public OnEditClickListener eListener;
+    private boolean isLoaderVisible = false;
+    private static final int VIEW_TYPE_LOADING = 0;
+    private static final int VIEW_TYPE_NORMAL = 1;
 
     public interface OnDeleteClickListener{
         void onDeleteClick(int position);
@@ -48,44 +48,64 @@ class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder>{
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_row, parent, false);
-
-        return new ViewHolder(view) ;
+    public BaseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        switch (viewType) {
+            case VIEW_TYPE_NORMAL:
+                return new ViewHolder(
+                        LayoutInflater.from(parent.getContext()).inflate(R.layout.note_row, parent, false));
+            case VIEW_TYPE_LOADING:
+                return new ProgressHolder(
+                        LayoutInflater.from(parent.getContext()).inflate(R.layout.note_load, parent, false));
+            default:
+                return null;
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        holder.note_name.setText(notes.get(position).getNoteName());
-        holder.note_date.setText(notes.get(position).getNoteDate());
-        holder.note_description.setText(notes.get(position).getNoteDescription());
+    public void onBindViewHolder(@NonNull BaseViewHolder holder, final int position) {
+        holder.onBind(position);
+    }
 
-//        Bitmap bitmap = BitmapFactory.decodeFile(notes.get(position).getNotePhotoPath());
-//
-//        Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 110,100, true);
+    @Override
+    public int getItemViewType(int position) {
+        if (isLoaderVisible) {
+            return position == notes.size() - 1 ? VIEW_TYPE_LOADING : VIEW_TYPE_NORMAL;
+        } else {
+            return VIEW_TYPE_NORMAL;
+        }
+    }
 
-        holder.note_image.setImageBitmap(photos.get(position));
-        holder.note_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (dListener != null)
-                {
-                    dListener.onDeleteClick(notes.get(position).getId());
-                }
+    public void addItems(List<Note> newNotes, ArrayList<Bitmap> newPhotos) {
+        notes.addAll(newNotes);
+        photos.addAll(newPhotos);
+        notifyDataSetChanged();
+    }
 
-            }
-        });
+    public void addLoading() {
+        isLoaderVisible = true;
+        isLoaderVisible = true;
+        notes.add(new Note());
+        notifyItemInserted(notes.size() - 1);
+    }
 
-        holder.note_edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (eListener != null)
-                {
-                    eListener.onEditClick(notes.get(position).getId());
-                }
-            }
-        });
+    public void removeLoading() {
+        isLoaderVisible = false;
+        isLoaderVisible = false;
+        int position = notes.size() - 1;
+        Note item = getItem(position);
+        if (item != null) {
+            notes.remove(position);
+            notifyItemRemoved(position);
+        }
+    }
 
+    public void clear() {
+        notes.clear();
+        notifyDataSetChanged();
+    }
+
+    Note getItem(int position) {
+        return notes.get(position);
     }
 
     @Override
@@ -93,14 +113,7 @@ class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder>{
         return notes.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView note_name;
-        public TextView note_date;
-        public TextView note_description;
-        public ImageView note_image;
-        public ImageButton note_delete;
-        public ImageButton note_edit;
-
+    public class ViewHolder extends BaseViewHolder {
         public ViewHolder(View itemView) {
             super(itemView);
             note_name = itemView.findViewById(R.id.note_name);
@@ -110,6 +123,53 @@ class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder>{
             note_delete = itemView.findViewById(R.id.delete_button);
             note_edit = itemView.findViewById(R.id.edit_button);
         }
+
+        protected void clear() {
+
+        }
+
+        public void onBind(int position) {
+            super.onBind(position);
+            final Note note = notes.get(position);
+            final Bitmap photo = photos.get(position);
+
+            note_name.setText(note.getNoteName());
+            note_date.setText(note.getNoteDate());
+            note_description.setText(note.getNoteDescription());
+            note_image.setImageBitmap(photo);
+
+            note_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (dListener != null)
+                    {
+                        dListener.onDeleteClick(note.getId());
+                    }
+
+                }
+            });
+
+            note_edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (eListener != null)
+                    {
+                        eListener.onEditClick(note.getId());
+                    }
+                }
+            });
+        }
     }
 
+    public class ProgressHolder extends BaseViewHolder {
+        ProgressHolder(View itemView) {
+            super(itemView);
+            note_load = itemView.findViewById(R.id.progressBar);
+        }
+
+        @Override
+        protected void clear() {
+
+        }
+    }
 }

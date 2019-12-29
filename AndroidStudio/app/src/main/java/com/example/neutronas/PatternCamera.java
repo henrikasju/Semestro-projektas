@@ -508,8 +508,6 @@ public class PatternCamera extends AppCompatActivity {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 90, bos);
         byte[] bitmapdata = bos.toByteArray();
-
-        //write the bytes in file
         try {
             FileOutputStream fos = new FileOutputStream(f);
             fos.write(bitmapdata);

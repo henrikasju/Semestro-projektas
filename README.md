@@ -16,6 +16,7 @@ Scaning stored image will reveal notes details.
  - UI design made using Adobe XD
  - View stored notes
  - View app news
+ - Local storage using SQLite
 ## Demo
 
 <img src="https://github.com/henrikasju/Semestro-projektas/blob/master/AndroidStudio/neutron.gif" height="500px" >

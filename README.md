@@ -10,4 +10,4 @@ An application made by https://github.com/Rimve (more focused backend) and https
  - UI made using with Adobe XD
 ## Demo
 
-![Demonstrational gif](https://github.com/henrikasju/Semestro-projektas/blob/master/AndroidStudio/neutron.gif)
+<img src="https://github.com/henrikasju/Semestro-projektas/blob/master/AndroidStudio/neutron.gif" height="500px" >

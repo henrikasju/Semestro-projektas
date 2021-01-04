@@ -3,8 +3,8 @@ An application made by https://github.com/Rimve (more focused backend) and https
 
 ## Purpose
 Provide alternative way to create and find custom notes. 
-Newly captured images are stored as note indice. 
-Scaning stored image will reveal notes details.
+Newly captured images are stored as note indices. 
+Scanning stored image will reveal notes details.
 
 ## Features
 

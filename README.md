@@ -7,7 +7,7 @@ An application made by https://github.com/Rimve (more focused backend) and https
  - Custom buttons
  - Custom navigation bar
  - Custom recycler view
- - UI made using with Adobe XD
+ - UI design made using Adobe XD
 ## Demo
 
 <img src="https://github.com/henrikasju/Semestro-projektas/blob/master/AndroidStudio/neutron.gif" height="500px" >

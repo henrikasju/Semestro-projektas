@@ -14,6 +14,8 @@ Scaning stored image will reveal notes details.
  - Custom navigation bar
  - Custom recycler view
  - UI design made using Adobe XD
+ - View stored notes
+ - View app news
 ## Demo
 
 <img src="https://github.com/henrikasju/Semestro-projektas/blob/master/AndroidStudio/neutron.gif" height="500px" >
